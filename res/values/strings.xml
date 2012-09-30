@@ -12,13 +12,20 @@
     <string name="button_manage_players_groups">Manage People / Groups</string>
     <string name="tournament">Tournament</string>
     <string name="game_name">Name</string>
-	<string name="hint_game_name">Team1 vs. Team2</string>
-	<string name="game_to">Game To</string>
-	<string name="game_submit">Start Game</string>
-	<string name="tournament_name">Name</string>
-	<string name="scoring_team">Team to Score</string>
-	<string name="hint_scoring_team">e.g. Columbia A</string>
-	<string name="tournament_date">Start Date</string>
-	<string name="hint_tournament_date">Form mm/dd/yy</string>
-	<string name="tournament_submit">Create Tournament</string>
+    <string name="hint_game_name">Team1 vs. Team2</string>
+    <string name="game_to">Game To</string>
+    <string name="game_submit">Start Game</string>
+    <string name="tournament_name">Name</string>
+    <string name="scoring_team">Team to Score</string>
+    <string name="hint_scoring_team">e.g. Columbia A</string>
+    <string name="tournament_date">Start Date</string>
+    <string name="hint_tournament_date">Form mm/dd/yy</string>
+    <string name="tournament_submit">Create Tournament</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_activity_manage">Manage Player / Groups</string>
+    <string name="manage_players">Players</string>
+    <string name="manage_groups">Groups</string>
+
 </resources>

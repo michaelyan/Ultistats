@@ -27,6 +27,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.ultistats.HomeActivity" />
         </activity>
+        <activity
+            android:name=".ManageActivity"
+            android:label="@string/title_activity_manage" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.ultistats.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>

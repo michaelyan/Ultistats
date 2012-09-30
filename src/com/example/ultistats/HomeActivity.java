@@ -23,4 +23,8 @@ public class HomeActivity extends Activity {
     public void takeStats(View view) {
     	startActivity(new Intent(this, TakeStatsActivity.class));
     }
+    
+    public void manage(View view) {
+    	startActivity(new Intent(this, ManageActivity.class));
+    }
 }
