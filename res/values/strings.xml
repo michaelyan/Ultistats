@@ -19,6 +19,6 @@
 	<string name="scoring_team">Team to Score</string>
 	<string name="hint_scoring_team">e.g. Columbia A</string>
 	<string name="tournament_date">Start Date</string>
-	<string name="hint_tournament_date">Form m/d/yy</string>
+	<string name="hint_tournament_date">Form mm/dd/yy</string>
 	<string name="tournament_submit">Create Tournament</string>
 </resources>

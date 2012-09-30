@@ -20,6 +20,7 @@ import android.widget.TextView;
 public class TakeStatsActivity extends FragmentActivity implements ActionBar.TabListener {
 
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+    private Fragment currentFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,13 +75,21 @@ public class TakeStatsActivity extends FragmentActivity implements ActionBar.Tab
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    	Fragment fragment = null;
+    	currentFragment = null;
     	if (tab.getText().equals(getString(R.string.game_setup))) {
-    		fragment = new GameSetup();
+    		currentFragment = new GameSetup();
     	} else if (tab.getText().equals(getString(R.string.tournament_setup))) {
-    		fragment = new TournamentSetup();
+    		currentFragment = new TournamentSetup();
     	}
-    	getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+    	getSupportFragmentManager().beginTransaction().replace(R.id.container, currentFragment).commit();
+    }
+    
+    public void createGame(View view) {
+    	((GameSetup) (currentFragment)).create(view);
+    }
+    
+    public void createTournament(View view) {
+    	((TournamentSetup) (currentFragment)).create(view);
     }
 
     @Override
