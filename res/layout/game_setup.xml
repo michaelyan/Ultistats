@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingTop="15dp"
+    android:orientation="vertical" >
+    
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView 
+            android:text="@string/tournament"
+            android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1" />
+        <Spinner
+            android:id="@+id/tournament_spinner"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1" />
+        
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView 
+            android:text="@string/game_name"
+            android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1" />
+        <EditText
+            android:id="@+id/text_game_name"
+            android:hint="@string/hint_game_name"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight=".5" />
+        
+
+    </LinearLayout>
+    
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView 
+            android:text="@string/game_to"
+            android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight=".25" />
+        <EditText
+            android:id="@+id/text_game_to"
+            android:inputType="number"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1" />
+
+    </LinearLayout>
+
+        
+    <Button 
+        android:text="@string/game_submit"
+        android:layout_width="fill_parent"
+ 		android:layout_height="wrap_content"
+   		android:layout_marginTop="20dp"
+   		android:paddingTop="15dp"
+   		android:paddingBottom="15dp"
+   		android:onClick="createGame" />
+    
+
+</LinearLayout>
