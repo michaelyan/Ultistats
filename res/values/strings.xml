@@ -1,7 +1,6 @@
 <resources>
-
     <string name="app_name">Ultistats</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">noob5</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="game_setup">Game Setup</string>
@@ -27,5 +26,4 @@
     <string name="title_activity_manage">Manage Player / Groups</string>
     <string name="manage_players">Players</string>
     <string name="manage_groups">Groups</string>
-
 </resources>
