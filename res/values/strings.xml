@@ -1,16 +1,24 @@
 <resources>
-
     <string name="app_name">Ultistats</string>
     <string name="hello_world">noob5</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
-    <string name="title_section3">Section 3</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section1">Section 1</string>
+    <string name="game_setup">Game Setup</string>
+    <string name="tournament_setup">Tournament Setup</string>
     <string name="title_activity_take_stats">TakeStatsActivity</string>
-    <string name="title_activity_dbtest">DBTest</string>
-    <string name="title_activity_database_adapter">DatabaseAdapter</string>
-    <string name="title_activity_view_player">ViewPlayerActivity</string>
-    <string name="title_activity_database_helper">DatabaseHelper</string>
-
+    <string name="button_take_stats">Take Stats</string>
+    <string name="button_view_stats">View Stats</string>
+    <string name="button_manage_players_groups">Manage People / Groups</string>
+    <string name="tournament">Tournament</string>
+    <string name="game_name">Name</string>
+	<string name="hint_game_name">Team1 vs. Team2</string>
+	<string name="game_to">Game To</string>
+	<string name="game_submit">Start Game</string>
+	<string name="tournament_name">Name</string>
+	<string name="scoring_team">Team to Score</string>
+	<string name="hint_scoring_team">e.g. Columbia A</string>
+	<string name="tournament_date">Start Date</string>
+	<string name="hint_tournament_date">Form mm/dd/yy</string>
+	<string name="tournament_submit">Create Tournament</string>
+>>>>>>> origin
 </resources>

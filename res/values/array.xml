@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tournament_array">
+        <item>-- None --</item>
+        <item>Haverween</item>
+        <item>Club Sectionals</item>
+        <item>Metro East D-1 Regionals</item>
+    </string-array>
+</resources>

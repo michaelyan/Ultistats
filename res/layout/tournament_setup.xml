@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingTop="15dp"
+    android:orientation="vertical" >
+    
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView 
+            android:text="@string/tournament_name"
+            android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1" />
+        <EditText
+            android:id="@+id/text_tournament_name"
+            android:inputType="textCapWords"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight=".5" />
+        
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView 
+            android:text="@string/scoring_team"
+            android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1" />
+        <EditText
+            android:id="@+id/text_scoring_team"
+            android:hint="@string/hint_scoring_team"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight=".5" />
+        
+
+    </LinearLayout>
+    
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView 
+            android:text="@string/tournament_date"
+            android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1" />
+        <EditText
+            android:id="@+id/text_tournament_date"
+            android:hint="@string/hint_tournament_date"
+            android:inputType="datetime"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_weight=".5" />
+        
+    </LinearLayout>
+
+        
+    <Button 
+        android:text="@string/tournament_submit"
+        android:layout_width="fill_parent"
+ 		android:layout_height="wrap_content"
+   		android:layout_marginTop="20dp"
+   		android:paddingTop="15dp"
+   		android:paddingBottom="15dp"
+   		android:onClick="createTournament" />
+    
+
+</LinearLayout>
