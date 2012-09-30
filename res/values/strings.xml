@@ -1,12 +1,16 @@
 <resources>
 
     <string name="app_name">Ultistats</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">noob5</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_section3">Section 3</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section1">Section 1</string>
     <string name="title_activity_take_stats">TakeStatsActivity</string>
+    <string name="title_activity_dbtest">DBTest</string>
+    <string name="title_activity_database_adapter">DatabaseAdapter</string>
+    <string name="title_activity_view_player">ViewPlayerActivity</string>
+    <string name="title_activity_database_helper">DatabaseHelper</string>
 
 </resources>
