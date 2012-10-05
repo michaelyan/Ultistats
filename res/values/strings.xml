@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Ultistats</string>
-    <string name="hello_world">noob5</string>
+    <string name="hello_world">noob555</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="game_setup">Game Setup</string>
     <string name="tournament_setup">Tournament Setup</string>
     <string name="title_activity_take_stats">TakeStatsActivity</string>
+    <string name="title_activity_view_player">ViewPlayerActivity</string>
     <string name="button_take_stats">Take Stats</string>
     <string name="button_view_stats">View Stats</string>
     <string name="button_manage_players_groups">Manage People / Groups</string>

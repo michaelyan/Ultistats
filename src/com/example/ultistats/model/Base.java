@@ -1,5 +1,7 @@
 package com.example.ultistats.model;
 
+import java.io.*;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -21,7 +23,7 @@ public class Base extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     
     // Database Name
-    private static final String DATABASE_NAME = "Ultistats";
+    private static final String DATABASE_NAME = "ultistats.sqlite";
  
     // Contacts table name
     private static final String TABLE_CONTACTS = "tbl_player";
@@ -31,11 +33,13 @@ public class Base extends SQLiteOpenHelper {
     private static final String KEY_FNAME = "fname";
     private static final String KEY_LNAME = "lname";
     
+    private Context context;
+    
     private SQLiteDatabase _db;
  
     public Base(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this._db = this.getWritableDatabase();
+        this.context = context;
     }
  
     // Creating Tables
@@ -73,6 +77,36 @@ public class Base extends SQLiteOpenHelper {
     	
     	return cursor;
     }
-    		
- 
+    
+    public void copyDatabase()
+    {
+        try {
+        	// Open your local db as the input stream
+        	InputStream myInput = this.context.getAssets().open(DATABASE_NAME);
+
+        	// Path to the just created empty db
+        	String outFileName = "/data/data/" + context.getPackageName() + "/databases/" + DATABASE_NAME;
+        	
+        	Log.i("outfilename", outFileName);
+
+        	OutputStream myOutput = new FileOutputStream(outFileName);
+
+        	// transfer bytes from the inputfile to the outputfile
+        	byte[] buffer = new byte[1024];
+        	int length;
+        	while ((length = myInput.read(buffer)) > 0) 
+        	 {
+        	     myOutput.write(buffer, 0, length);
+        	 }
+
+        	// Close the streams
+        	myOutput.flush();
+        	myOutput.close();
+        	myInput.close();
+        	} 
+        	catch (Exception e) 
+        	{
+        	Log.e("error", e.toString());
+        	}
+    }
 }

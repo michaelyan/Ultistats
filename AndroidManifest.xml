@@ -3,6 +3,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="15" />
@@ -40,8 +41,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".model.DatabaseHelper"
-            android:label="@string/title_activity_database_helper" >
+            android:name=".ViewPlayerActivity"
+            android:label="@string/title_activity_view_player" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
