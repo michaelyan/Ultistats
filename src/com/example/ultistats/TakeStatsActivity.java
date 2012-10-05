@@ -62,11 +62,9 @@ public class TakeStatsActivity extends FragmentActivity implements ActionBar.Tab
     }
 
 
-    @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-    @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     	currentFragment = null;
     	if (tab.getText().equals(getString(R.string.game_setup))) {
@@ -85,7 +83,6 @@ public class TakeStatsActivity extends FragmentActivity implements ActionBar.Tab
     	((TournamentSetup) (currentFragment)).create(view);
     }
 
-    @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 

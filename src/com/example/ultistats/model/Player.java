@@ -61,8 +61,8 @@ public class Player extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
     public Cursor listPlayers() {
-    	String selectQuery = "SELECT * FROM tbl_player";
-    	Cursor cursor = this._db.rawQuery(selectQuery, null);
+//    	String selectQuery = "SELECT * FROM tbl_player";
+//    	Cursor cursor = this._db.rawQuery(selectQuery, null);
     	
 //    	if (cursor.moveToFirst()) {
 //            do {
@@ -71,7 +71,8 @@ public class Player extends SQLiteOpenHelper {
 //            } while (cursor.moveToNext());
 //        }
     	
-    	return cursor;
+//    	return cursor;
+    	return null;
     }
     		
  

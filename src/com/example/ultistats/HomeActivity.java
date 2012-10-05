@@ -18,7 +18,7 @@ public class HomeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Player p = new Player(this);
+        /*Player p = new Player(this);
         Cursor cursor = p.listPlayers();
         
         String data = "";
@@ -37,8 +37,8 @@ public class HomeActivity extends Activity {
     	TextView a = new TextView(this);
     	a.setText(data);
     	
-//        setContentView(R.layout.activity_home);
-    	setContentView(a);
+    	setContentView(a);*/
+        setContentView(R.layout.activity_home);
     }
 
     @Override

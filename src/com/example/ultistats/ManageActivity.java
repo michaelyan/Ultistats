@@ -69,11 +69,9 @@ public class ManageActivity extends FragmentActivity implements ActionBar.TabLis
     }
 
 
-    @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-    @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     	currentFragment = null;
     	if (tab.getText().equals(getString(R.string.manage_players))) {
@@ -84,7 +82,6 @@ public class ManageActivity extends FragmentActivity implements ActionBar.TabLis
     	getSupportFragmentManager().beginTransaction().replace(R.id.container, currentFragment).commit();
     }
 
-    @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 

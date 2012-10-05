@@ -26,4 +26,5 @@
     <string name="title_activity_manage">Manage Player / Groups</string>
     <string name="manage_players">Players</string>
     <string name="manage_groups">Groups</string>
+    <string name="title_activity_database_helper">Database Helper</string>
 </resources>
