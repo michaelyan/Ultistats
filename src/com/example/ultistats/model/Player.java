@@ -1,14 +1,12 @@
 package com.example.ultistats.model;
 
-import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.example.ultistats.DatabaseHelper;
-
 
 public class Player extends Base {
 
@@ -22,6 +20,13 @@ public class Player extends Base {
 	private static final String PLAYER_BASE_PATH = "players";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
+	
+	private static final UriMatcher sURIMatcher = new UriMatcher(
+	        UriMatcher.NO_MATCH);
+	static {
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH, 1);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", 2);
+	}
 	
 	private static final String columns = "fname, lname";
 	
@@ -54,18 +59,17 @@ public class Player extends Base {
 	        String[] selectionArgs, String sortOrder) {
 	    SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 	    queryBuilder.setTables(TABLE_NAME);
-//	    int uriType = sURIMatcher.match(uri);
-//	    switch (uriType) {
-//	    case TUTORIAL_ID:
-//	        queryBuilder.appendWhere(TutListDatabase.ID + "="
-//	                + uri.getLastPathSegment());
-//	        break;
-//	    case TUTORIALS:
-//	        // no filter
-//	        break;
-//	    default:
-//	        throw new IllegalArgumentException("Unknown URI");
-//	    }
+	    int uriType = sURIMatcher.match(uri);
+	    switch (uriType) {
+	    case 1:
+	        break;
+	    case 2:
+	        queryBuilder.appendWhere("_id="
+	                + uri.getLastPathSegment());
+	        break;
+	    default:
+	        throw new IllegalArgumentException("Unknown URI");
+	    }
 	    Cursor cursor = queryBuilder.query(this.db.getReadableDatabase(),
 	            projection, selection, selectionArgs, null, null, sortOrder);
 	    return cursor;

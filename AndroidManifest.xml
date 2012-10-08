@@ -36,8 +36,8 @@
                 android:value="com.example.ultistats.HomeActivity" />
         </activity>
         <activity
-            android:name=".ViewPlayerActivity"
-            android:label="@string/title_activity_view_player" >
+            android:name=".ViewPlayerActivityList"
+            android:label="@string/title_activity_view_player_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
