@@ -2,6 +2,7 @@ package com.example.ultistats.model;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -9,10 +10,12 @@ import android.net.Uri;
 import com.example.ultistats.DatabaseHelper;
 
 
-public class Player extends ContentProvider {
+public class Player extends Base {
+
 	private DatabaseHelper db;
 	
 	//strings
+	private static final String TABLE_NAME = "tbl_player";
 	private static final String AUTHORITY = "com.example.ultistats.model.Player";
 	public static final int TUTORIALS = 100;
 	public static final int TUTORIAL_ID = 110;
@@ -22,7 +25,6 @@ public class Player extends ContentProvider {
 	
 	private static final String columns = "fname, lname";
 	
-
 	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
 		// TODO Auto-generated method stub
@@ -51,7 +53,7 @@ public class Player extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 	        String[] selectionArgs, String sortOrder) {
 	    SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-	    queryBuilder.setTables("tbl_player");
+	    queryBuilder.setTables(TABLE_NAME);
 //	    int uriType = sURIMatcher.match(uri);
 //	    switch (uriType) {
 //	    case TUTORIAL_ID:
