@@ -1,78 +1,77 @@
 package com.example.ultistats.model;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.util.Log;
-import android.view.Menu;
-
-import java.util.ArrayList;
-import java.util.List;
- 
+import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
- 
-public class Player extends SQLiteOpenHelper {
- 
-    // All Static variables
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-    
-    // Database Name
-    private static final String DATABASE_NAME = "Ultistats";
- 
-    // Contacts table name
-    private static final String TABLE_CONTACTS = "tbl_player";
- 
-    // Contacts Table Columns names
-    private static final String KEY_ID = "_id";
-    private static final String KEY_FNAME = "fname";
-    private static final String KEY_LNAME = "lname";
-    
-    private SQLiteDatabase _db;
- 
-    public Player(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this._db = this.getWritableDatabase();
-    }
- 
-    // Creating Tables
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-//        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
-//                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-//                + KEY_PH_NO + " TEXT" + ")";
-//        db.execSQL(CREATE_CONTACTS_TABLE);
-    }
- 
-    // Upgrading database
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        // Drop older table if existed
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
-// 
-//        // Create tables again
-//        onCreate(db);
-    }
- 
-    /**
-     * All CRUD(Create, Read, Update, Delete) Operations
-     */
-    public Cursor listPlayers() {
-    	String selectQuery = "SELECT * FROM tbl_player";
-    	Cursor cursor = this._db.rawQuery(selectQuery, null);
-    	
-//    	if (cursor.moveToFirst()) {
-//            do {
-//                Log.d(cursor.getString(0), cursor.getString(1));
-//                Log.d(cursor.getString(2), cursor.getString(1));
-//            } while (cursor.moveToNext());
-//        }
-    	
-    	return cursor;
-    }
-    		
- 
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.net.Uri;
+
+import com.example.ultistats.DatabaseHelper;
+
+
+public class Player extends ContentProvider {
+	private DatabaseHelper db;
+	
+	//strings
+	private static final String AUTHORITY = "com.example.ultistats.model.Player";
+	public static final int TUTORIALS = 100;
+	public static final int TUTORIAL_ID = 110;
+	private static final String PLAYER_BASE_PATH = "players";
+	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
+	        + "/" + PLAYER_BASE_PATH);
+	
+	private static final String columns = "fname, lname";
+	
+
+	@Override
+	public int delete(Uri arg0, String arg1, String[] arg2) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getType(Uri arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Uri insert(Uri arg0, ContentValues arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean onCreate() {
+		db = new DatabaseHelper(getContext());
+		return true;
+	}
+
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+	        String[] selectionArgs, String sortOrder) {
+	    SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+	    queryBuilder.setTables("tbl_player");
+//	    int uriType = sURIMatcher.match(uri);
+//	    switch (uriType) {
+//	    case TUTORIAL_ID:
+//	        queryBuilder.appendWhere(TutListDatabase.ID + "="
+//	                + uri.getLastPathSegment());
+//	        break;
+//	    case TUTORIALS:
+//	        // no filter
+//	        break;
+//	    default:
+//	        throw new IllegalArgumentException("Unknown URI");
+//	    }
+	    Cursor cursor = queryBuilder.query(this.db.getReadableDatabase(),
+	            projection, selection, selectionArgs, null, null, sortOrder);
+	    return cursor;
+	}
+
+	@Override
+	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
