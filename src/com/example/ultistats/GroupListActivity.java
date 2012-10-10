@@ -1,81 +1,73 @@
 package com.example.ultistats;
 
-import android.app.Activity;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
 
-public class GroupListActivity extends Activity {
+import com.example.ultistats.model.Group;
+
+public class GroupListActivity extends LoaderActivity {
 	
-	private ExpadableAdapter mAdapter;
+	private ExpandableAdapter adapter;
 	private ExpandableListView list;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.list_group);
-		mAdapter = new ExpadableAdapter();
+		setContentView(R.layout.group_list);
+		adapter = new ExpandableAdapter();
+		
+        //Asynchronously load the data  for the player list
+        getSupportLoaderManager().initLoader(0, null, this);
 
+        /*How do you know that the cursor has results before setting the adapter?*/
+        
 		list = (ExpandableListView) findViewById(R.id.list_group);
-		list.setAdapter(mAdapter);
-		list.setGroupIndicator(null);
-
-		list.setOnGroupExpandListener(new OnGroupExpandListener() {
-
-			public void onGroupExpand(int groupPosition) {
-				int len = mAdapter.getGroupCount();
-				for (int i = 0; i < len; i++) {
-					if (i != groupPosition) {
-						list.collapseGroup(i);
-					}
-				}
-			}
-		});
-
-		list.setOnGroupClickListener(new OnGroupClickListener() {
-
-			public boolean onGroupClick(ExpandableListView parent, View v,
-					int groupPosition, long id) {
-                                 //causes out of bounds exception. has to be done on Collapse for some reason.
-
-				// int len = mAdapter.getGroupCount();
-				// for (int i = 0; i < len; i++) {
-				// if (i != groupPosition) {
-				// parent.collapseGroup(i);
-				// }
-				// }
-
-				return false;
-			}
-
-		});
-
+		list.setAdapter(adapter);
+//		list.setGroupIndicator(null);
 	}
 
-	public class ExpadableAdapter extends BaseExpandableListAdapter {
-
+	public class ExpandableAdapter extends BaseExpandableListAdapter {
+		
 		private String[] groups = { "People Names", "Dog Names", "Cat Names",
 				"Fish Names" };
-		private String[][] children = { { "Arnold" }, { "Ace" }, { "Fluffy" },
+		private String[][] children = { { "Arnold", "Johnson" }, { "Ace" }, { "Fluffy" },
 				{ "Goldy" } };
+		private Cursor cursor;
 
 		public Object getChild(int groupPosition, int childPosition) {
 			return children[groupPosition][childPosition];
+		}
+		
+		public void setCursor(Cursor cursor) {
+			this.cursor = cursor;
+			cursor.moveToFirst();
 		}
 
 		public long getChildId(int groupPosition, int childPosition) {
 			return childPosition;
 		}
 
+		public View getGroupView(int groupPosition, boolean isExpanded,
+				View convertView, ViewGroup parent) {
+			TextView foo = new TextView(getApplicationContext());
+//			String text = groups[groupPosition];
+			String text = cursor.getString(0);
+			foo.setText(text);
+			return foo;
+		}
+
 		public View getChildView(int groupPosition, int childPosition,
 				boolean isLastChild, View convertView, ViewGroup parent) {
 			TextView foo = new TextView(getApplicationContext());
-			String text = "[" + groupPosition + "," + childPosition + "]";
+			String text = children[groupPosition][childPosition];
 			foo.setText(text);
 			return foo;
 		}
@@ -96,14 +88,6 @@ public class GroupListActivity extends Activity {
 			return groupPosition;
 		}
 
-		public View getGroupView(int groupPosition, boolean isExpanded,
-				View convertView, ViewGroup parent) {
-			TextView foo = new TextView(getApplicationContext());
-			String text = "[" + groupPosition + "]";
-			foo.setText(text);
-			return foo;
-		}
-
 		public boolean hasStableIds() {
 			return true;
 		}
@@ -113,4 +97,20 @@ public class GroupListActivity extends Activity {
 		}
 	}
 
+    @Override
+    public Loader <Cursor> onCreateLoader(int id, Bundle bundle) {
+    	//What data to get
+        CursorLoader cursorLoader = new CursorLoader(getApplicationContext(),
+	        Uri.withAppendedPath(Group.CONTENT_URI, "all"), null, null, null, null);
+        return cursorLoader;
+    }
+    
+    @Override
+    public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
+    	adapter.setCursor(cursor);
+    }
+    
+    @Override
+    public void onLoaderReset(Loader <Cursor> loader) {
+    }
 }

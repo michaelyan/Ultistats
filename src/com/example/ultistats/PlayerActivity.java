@@ -18,7 +18,7 @@ public class PlayerActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String playerID = intent.getStringExtra(PlayerListActivity.PLAYER_ID);
-        setContentView(R.layout.list_example_entry);
+        setContentView(R.layout.player_list_entry);
         
         Cursor cursor = getContentResolver().query(
 //	        Uri.withAppendedPath(Player.CONTENT_URI, playerID), null, null, null, null);

@@ -60,7 +60,14 @@ public class Group extends Base {
 	    int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
 	    case 1:
-	    	cursor = db.rawQuery("SELECT * FROM tbl_group", null);
+	    	Log.i("trying", "stuff");
+	    	String query = "" + 
+		    	"SELECT group_name, group_id as _id, tbl_player.fname, tbl_player.lname"  +  
+				"FROM tbl_player " +
+				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id" +
+				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id";
+	    	cursor = db.rawQuery(query, null);
+	    	Log.i("success", "noob");
 	        break;
 	    case 2:
 	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element

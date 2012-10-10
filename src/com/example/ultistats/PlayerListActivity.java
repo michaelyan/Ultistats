@@ -28,7 +28,7 @@ public class PlayerListActivity extends LoaderActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_example);
+        setContentView(R.layout.player_list);
 
         //Asynchronously load the data  for the player list
         getSupportLoaderManager().initLoader(0, null, this);
@@ -45,7 +45,7 @@ public class PlayerListActivity extends LoaderActivity {
         };
         // create the adapter using the cursor pointing to the desired data as well as the layout information
         adapter = new SimpleCursorAdapter(
-	        this, R.layout.list_example_entry, null, columns, to, 0); //what flags?
+	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
 
         listView = (ListView) findViewById(android.R.id.list);
         listView.setAdapter(adapter);
@@ -69,7 +69,7 @@ public class PlayerListActivity extends LoaderActivity {
     }
 
     @Override
-    public Loader <Cursor> onCreateLoader(int arg0, Bundle arg1) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
     	//What data to get
         CursorLoader cursorLoader = new CursorLoader(getApplicationContext(),
 	        Uri.withAppendedPath(Player.CONTENT_URI, "all"), null, null, null, null);
