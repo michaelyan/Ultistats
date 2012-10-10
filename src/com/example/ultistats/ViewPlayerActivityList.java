@@ -3,6 +3,7 @@ package com.example.ultistats;
 import com.example.ultistats.model.Base;
 import com.example.ultistats.model.Player;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
@@ -41,7 +42,7 @@ public class ViewPlayerActivityList extends FragmentActivity implements
         };
         // create the adapter using the cursor pointing to the desired data as well as the layout information
         mAdapter = new SimpleCursorAdapter(
-        this, R.layout.list_example_entry, null, columns, to, 0); //what flags?
+	        this, R.layout.list_example_entry, null, columns, to, 0); //what flags?
 
         listView = (ListView) findViewById(android.R.id.list);
         listView.setAdapter(mAdapter);
@@ -49,9 +50,7 @@ public class ViewPlayerActivityList extends FragmentActivity implements
 
         listView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView <?> parent, View view, int position, long id) {
-//                String selection = listView.getItemAtPosition(position).toString();
                 String selection = String.valueOf(id);
-                // When clicked, show a toast with the TextView text
                 Toast.makeText(getApplicationContext(), selection, Toast.LENGTH_LONG).show();
             }
         });
@@ -61,21 +60,19 @@ public class ViewPlayerActivityList extends FragmentActivity implements
 
     @Override
     public Loader <Cursor> onCreateLoader(int arg0, Bundle arg1) {
-        String[] projection = {
-            "fname", "lname", "_id", "number"
-        };
+    	//What data to get
         CursorLoader cursorLoader = new CursorLoader(this,
-        Player.CONTENT_URI, projection, null, null, null);
+	        Uri.withAppendedPath(Player.CONTENT_URI, "all"), null, null, null, null);
         return cursorLoader;
     }
 
     @Override
-    public void onLoadFinished(Loader < Cursor > loader, Cursor cursor) {
+    public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
         mAdapter.swapCursor(cursor);
     }
 
     @Override
-    public void onLoaderReset(Loader < Cursor > loader) {
+    public void onLoaderReset(Loader <Cursor> loader) {
         mAdapter.swapCursor(null);
     }
 }

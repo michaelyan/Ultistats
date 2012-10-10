@@ -22,5 +22,7 @@ public class ViewPlayerActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        
     }
 }

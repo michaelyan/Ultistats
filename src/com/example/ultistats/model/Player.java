@@ -3,28 +3,27 @@ package com.example.ultistats.model;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.ultistats.DatabaseHelper;
 
 public class Player extends Base {
 
-	private DatabaseHelper db;
+	private SQLiteDatabase db;
 	
-	//strings
-	private static final String TABLE_NAME = "tbl_player";
+	//Must be the same name as the full class path
 	private static final String AUTHORITY = "com.example.ultistats.model.Player";
-	public static final int TUTORIALS = 100;
-	public static final int TUTORIAL_ID = 110;
 	private static final String PLAYER_BASE_PATH = "players";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 	
+	//This determines what uris go to this provider
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 	        UriMatcher.NO_MATCH);
 	static {
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH, 1);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/all", 1);
 	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", 2);
 	}
 	
@@ -50,28 +49,25 @@ public class Player extends Base {
 
 	@Override
 	public boolean onCreate() {
-		db = new DatabaseHelper(getContext());
+		db = new DatabaseHelper(getContext()).getWritableDatabase();
 		return true;
 	}
 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 	        String[] selectionArgs, String sortOrder) {
-	    SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-	    queryBuilder.setTables(TABLE_NAME);
+		Cursor cursor = null;
 	    int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
 	    case 1:
+	    	cursor = db.rawQuery("SELECT * FROM tbl_player", null);
 	        break;
 	    case 2:
-	        queryBuilder.appendWhere("_id="
-	                + uri.getLastPathSegment());
 	        break;
 	    default:
 	        throw new IllegalArgumentException("Unknown URI");
 	    }
-	    Cursor cursor = queryBuilder.query(this.db.getReadableDatabase(),
-	            projection, selection, selectionArgs, null, null, sortOrder);
+	    Log.i("gg", "no re");
 	    return cursor;
 	}
 
