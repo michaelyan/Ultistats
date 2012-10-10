@@ -14,7 +14,7 @@
 		android:layout_height="wrap_content"
 		android:textSize="28dip" />
     <TextView
-		android:id="@+id/number_entry"
+		android:id="@+id/number"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textSize="28dip" />

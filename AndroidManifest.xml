@@ -36,7 +36,7 @@
                 android:value="com.example.ultistats.HomeActivity" />
         </activity>
         <activity
-            android:name=".ViewPlayerActivityList"
+            android:name=".ViewPlayerListActivity"
             android:label="@string/title_activity_view_player_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,6 +44,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+	        android:name=".ViewPlayerActivity"
+	        android:label="@string/title_activity_view_player" >
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.example.myfirstapp.MainActivity" />
+	    </activity>
         <provider
     		android:authorities="com.example.ultistats.model.Player"
     		android:multiprocess="true"

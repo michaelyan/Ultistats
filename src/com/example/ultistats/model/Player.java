@@ -63,11 +63,12 @@ public class Player extends Base {
 	    	cursor = db.rawQuery("SELECT * FROM tbl_player", null);
 	        break;
 	    case 2:
+	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element
+	    	cursor = db.rawQuery("SELECT * FROM tbl_player WHERE _id = ?", uri.getLastPathSegment().split(" ", 1));
 	        break;
 	    default:
 	        throw new IllegalArgumentException("Unknown URI");
 	    }
-	    Log.i("gg", "no re");
 	    return cursor;
 	}
 
