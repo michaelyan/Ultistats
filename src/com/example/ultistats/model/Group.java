@@ -9,32 +9,31 @@ import android.util.Log;
 
 import com.example.ultistats.DatabaseHelper;
 
-public class Player extends Base {
+public class Group extends Base {
 
 	private SQLiteDatabase db;
 	
 	//Must be the same name as the full class path
-	private static final String AUTHORITY = "com.example.ultistats.model.Player";
-	private static final String PLAYER_BASE_PATH = "players";
+	private static final String AUTHORITY = "com.example.ultistats.model.Group";
+	private static final String GROUP_BASE_PATH = "groups";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-	        + "/" + PLAYER_BASE_PATH);
+	        + "/" + GROUP_BASE_PATH);
 	
 	//This determines what uris go to this provider
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 	        UriMatcher.NO_MATCH);
 	static {
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/all", 1);
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", 2);
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/all", 1);
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/#", 2);
 	}
-	
+
 	@Override
 	public boolean onCreate() {
 		db = new DatabaseHelper(getContext()).getWritableDatabase();
 		return true;
 	}
-
 	
-	private static final String columns = "fname, lname";
+//	private static final String columns = "fname, lname";
 	
 	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
@@ -61,7 +60,7 @@ public class Player extends Base {
 	    int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
 	    case 1:
-	    	cursor = db.rawQuery("SELECT * FROM tbl_player", null);
+	    	cursor = db.rawQuery("SELECT * FROM tbl_group", null);
 	        break;
 	    case 2:
 	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element
