@@ -61,11 +61,12 @@ public class Group extends Base {
 	    switch (uriType) {
 	    case 1:
 	    	Log.i("trying", "stuff");
-	    	String query = "" + 
-		    	"SELECT group_name, group_id as _id, tbl_player.fname, tbl_player.lname"  +  
-				"FROM tbl_player " +
-				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id" +
-				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id";
+//	    	String query = "" + 
+//		    	"SELECT group_name, group_id as _id, tbl_player.fname, tbl_player.lname"  +  
+//				"FROM tbl_player " +
+//				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id" +
+//				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id";
+	    	String query = "SELECT * from tbl_group";
 	    	cursor = db.rawQuery(query, null);
 	    	Log.i("success", "noob");
 	        break;

@@ -29,8 +29,6 @@ public class GroupListActivity extends LoaderActivity {
 
         /*How do you know that the cursor has results before setting the adapter?*/
         
-		list = (ExpandableListView) findViewById(R.id.list_group);
-		list.setAdapter(adapter);
 //		list.setGroupIndicator(null);
 	}
 
@@ -108,6 +106,8 @@ public class GroupListActivity extends LoaderActivity {
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
     	adapter.setCursor(cursor);
+		list = (ExpandableListView) findViewById(R.id.list_group);
+		list.setAdapter(adapter);
     }
     
     @Override
