@@ -13,8 +13,16 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -24,6 +32,7 @@ public class PlayerListActivity extends LoaderActivity {
 	//When you click on a player, store the id of the clicked player here so you can pass it on
 	public static final String PLAYER_ID = "com.example.ultistats.player_id";
     private ListView listView;
+    private ActionMode mActionMode;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,21 +62,70 @@ public class PlayerListActivity extends LoaderActivity {
 
         listView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView <?> parent, View view, int position, long id) {
-//                String selection = String.valueOf(id);
-//                Toast.makeText(getApplicationContext(), selection, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
                 intent.putExtra(PLAYER_ID, String.valueOf(id));
                 startActivity(intent);
             }
         });
-
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id) {
+              if (mActionMode != null)
+                return false;
+              
+              Log.i("id clicked", String.valueOf(id));
+              mActionMode = PlayerListActivity.this.startActionMode(mActionModeCallback);
+              view.setSelected(true);
+              return true;
+			}
+          });
     }
     
+    //How to get ids of current item clicked on?
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+          MenuInflater inflater = mode.getMenuInflater();
+          inflater.inflate(R.menu.player_actions, menu);
+          return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+          return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+          switch (item.getItemId()) {
+          case R.id.toast:
+        	  Log.i("The id is ", String.valueOf(mode.getTitle()));
+//            Toast.makeText(PlayerListActivity.this, "Selected menu",
+//                Toast.LENGTH_LONG).show();
+            mode.finish();
+            return true;
+          default:
+            return false;
+          }
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+          mActionMode = null;
+        }
+      };
+
+    //Happens when you click on the button
     public void displayGroups(View view) {
     	Intent intent = new Intent(this, GroupListActivity.class);
     	startActivity(intent);
     }
-
+    
+    //Loader functions
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
     	//What data to get

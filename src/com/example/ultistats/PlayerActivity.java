@@ -21,7 +21,6 @@ public class PlayerActivity extends FragmentActivity {
         setContentView(R.layout.player_list_entry);
         
         Cursor cursor = getContentResolver().query(
-//	        Uri.withAppendedPath(Player.CONTENT_URI, playerID), null, null, null, null);
 	        Uri.withAppendedPath(Player.CONTENT_URI, playerID), null, null, null, null);
         
         cursor.moveToFirst();

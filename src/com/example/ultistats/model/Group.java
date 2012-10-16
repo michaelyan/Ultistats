@@ -19,11 +19,15 @@ public class Group extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + GROUP_BASE_PATH);
 	
+	
+	public static final int ALL = 1;
+	public static final int PLAYERS = 2;
 	//This determines what uris go to this provider
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 	        UriMatcher.NO_MATCH);
 	static {
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/all", 1);
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/all", ALL);
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/players", PLAYERS);
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/#", 2);
 	}
 
@@ -58,21 +62,25 @@ public class Group extends Base {
 	        String[] selectionArgs, String sortOrder) {
 		Cursor cursor = null;
 	    int uriType = sURIMatcher.match(uri);
-	    switch (uriType) {
-	    case 1:
-	    	Log.i("trying", "stuff");
-//	    	String query = "" + 
-//		    	"SELECT group_name, group_id as _id, tbl_player.fname, tbl_player.lname"  +  
-//				"FROM tbl_player " +
-//				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id" +
-//				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id";
-	    	String query = "SELECT * from tbl_group";
+	    String query;
+	    
+	    switch(uriType) {
+	    case ALL:
+	    	query = "SELECT group_name, count(group_id) as player_count " +
+	    			"FROM tbl_player_group " +
+	    			"JOIN tbl_group ON tbl_group._id = tbl_player_group.group_id " +
+	    			"GROUP BY group_id " +
+	    			"ORDER by group_name DESC";
 	    	cursor = db.rawQuery(query, null);
-	    	Log.i("success", "noob");
 	        break;
-	    case 2:
-	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element
-	    	cursor = db.rawQuery("SELECT * FROM tbl_player WHERE _id = ?", uri.getLastPathSegment().split(" ", 1));
+	    case PLAYERS:
+	    	query = "" + 
+		    	"SELECT tbl_player._id, tbl_player.fname, tbl_player.lname, tbl_group._id as group_id "  +  
+				"FROM tbl_player " +
+				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id " +
+				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
+				"ORDER BY group_name DESC";
+	    	cursor = db.rawQuery(query, null);
 	        break;
 	    default:
 	        throw new IllegalArgumentException("Unknown URI");

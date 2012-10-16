@@ -19,20 +19,61 @@ public class Player extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 	
+	public static final int ALL = 1;
+	public static final int PLAYER = 2;
 	//This determines what uris go to this provider
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 	        UriMatcher.NO_MATCH);
 	static {
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/all", 1);
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", 2);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/all", ALL);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", PLAYER);
 	}
 	
+	//A wrapper class for database storage
+	public static class PlayerRow {
+		private int _id;
+		private String fname;
+		private String lname;
+		
+		public PlayerRow() {}
+		
+		public PlayerRow(int _id, String fname, String lname) {
+			this._id = _id;
+			this.fname = fname;
+			this.lname = lname;
+		}
+
+		public int getId() {
+			return _id;
+		}
+
+		public String getfname() {
+			return fname;
+		}
+
+		public String getlname() {
+			return lname;
+		}
+		
+		public void setPlayerId(int _id) {
+			this._id = _id;
+		}
+
+		public void setFname(String fname) {
+			this.fname = fname;
+		}
+
+		public void setLname(String lname) {
+			this.lname = lname;
+		}
+
+	}
+
 	@Override
 	public boolean onCreate() {
 		db = new DatabaseHelper(getContext()).getWritableDatabase();
 		return true;
 	}
-
 	
 	private static final String columns = "fname, lname";
 	
