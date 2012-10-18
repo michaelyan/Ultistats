@@ -30,5 +30,9 @@
     <string name="manage_players">Players</string>
     <string name="manage_groups">Groups</string>
     <string name="title_activity_group">Group</string>
+    <string name="player_edit_title">Edit Player</string>
+    <string name="player_edit_fname_hint">First Name</string>
+    <string name="player_edit_lname_hint">Last Name</string>
+    <string name="player_edit_number_hint">Number</string>
 
 </resources>

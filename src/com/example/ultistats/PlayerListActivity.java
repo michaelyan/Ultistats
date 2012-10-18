@@ -75,7 +75,7 @@ public class PlayerListActivity extends LoaderActivity {
                 return false;
               
               mActionMode = PlayerListActivity.this.startActionMode(mActionModeCallback);
-              mActionMode.setTag(new Integer((int)id));
+              mActionMode.setTag(String.valueOf(id));
               view.setSelected(true);
               return true;
 			}
@@ -102,6 +102,10 @@ public class PlayerListActivity extends LoaderActivity {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
           switch (item.getItemId()) {
           case R.id.edit:
+                Intent intent = new Intent(getApplicationContext(), PlayerEditActivity.class);
+                intent.putExtra(PLAYER_ID, (String) mode.getTag());
+                startActivity(intent);
+        	  
         	  Log.i("The id is ", String.valueOf(mode.getTag()));
             Toast.makeText(PlayerListActivity.this, "Selected player with id " + mode.getTag(),
                 Toast.LENGTH_LONG).show();

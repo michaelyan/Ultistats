@@ -47,11 +47,11 @@ public class Player extends Base {
 			return _id;
 		}
 
-		public String getfname() {
+		public String getFname() {
 			return fname;
 		}
 
-		public String getlname() {
+		public String getLname() {
 			return lname;
 		}
 		

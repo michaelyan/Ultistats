@@ -92,7 +92,7 @@ public class GroupListActivity extends LoaderActivity {
         public void setupPlayers() {
             playerCursor.moveToFirst();
             int i = 0;
-            players.add(new ArrayList < PlayerRow > ());
+            players.add(new ArrayList <PlayerRow> ());
 
             while (!playerCursor.isAfterLast()) {
                 int _id = playerCursor.getInt(playerCursor.getColumnIndex("_id"));
@@ -107,7 +107,7 @@ public class GroupListActivity extends LoaderActivity {
                 if (!playerCursor.isAfterLast()) {
                     if (playerCursor.getInt(playerCursor.getColumnIndex("group_id")) != prevGroupId) {
                         i++;
-                        players.add(new ArrayList < PlayerRow > ());
+                        players.add(new ArrayList <PlayerRow> ());
                     }
                 }
             }
@@ -125,7 +125,7 @@ public class GroupListActivity extends LoaderActivity {
         boolean isLastChild, View convertView, ViewGroup parent) {
             TextView view = new TextView(getApplicationContext());
             PlayerRow pr = getChild(groupPosition, childPosition);
-            String name = pr.getfname() + pr.getlname();
+            String name = pr.getFname() + pr.getLname();
             view.setText(name);
             return view;
         }
