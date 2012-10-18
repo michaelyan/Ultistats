@@ -53,8 +53,8 @@ public class GroupListActivity extends LoaderActivity {
     }
 
     public class ExpandableAdapter extends BaseExpandableListAdapter {
-        private ArrayList < String > groups = new ArrayList < String > ();
-        private ArrayList < ArrayList < PlayerRow >> players = new ArrayList < ArrayList < PlayerRow >> ();
+        private ArrayList <String> groups = new ArrayList <String> ();
+        private ArrayList <ArrayList<PlayerRow>> players = new ArrayList<ArrayList<PlayerRow>> ();
 
         private Cursor groupCursor;
         private Cursor playerCursor;

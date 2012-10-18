@@ -101,7 +101,7 @@ public class PlayerListActivity extends LoaderActivity {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
           switch (item.getItemId()) {
-          case R.id.edit:
+          case R.id.player_edit:
                 Intent intent = new Intent(getApplicationContext(), PlayerEditActivity.class);
                 intent.putExtra(PLAYER_ID, (String) mode.getTag());
                 startActivity(intent);

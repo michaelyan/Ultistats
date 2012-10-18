@@ -16,6 +16,7 @@ public class Player extends Base {
 	//Must be the same name as the full class path
 	private static final String AUTHORITY = "com.example.ultistats.model.Player";
 	private static final String PLAYER_BASE_PATH = "players";
+	private static final String TABLE_NAME = "tbl_player";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 	
@@ -90,9 +91,20 @@ public class Player extends Base {
 	}
 
 	@Override
-	public Uri insert(Uri arg0, ContentValues arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public int update(Uri uri, ContentValues values, String selection,
+	String[] selectionArgs) {
+	    int uriType = sURIMatcher.match(uri);
+	    int rowsUpdated = 0;
+	    switch (uriType) {
+	        case PLAYER:
+	            rowsUpdated = db.update(TABLE_NAME, values, selection, selectionArgs);
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Unknown URI: " + uri);
+	    }
+	    //do i need this?
+	    getContext().getContentResolver().notifyChange(uri, null);
+	    return rowsUpdated;
 	}
 
 	@Override
@@ -101,22 +113,16 @@ public class Player extends Base {
 		Cursor cursor = null;
 	    int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
-	    case 1:
+	    case ALL:
 	    	cursor = db.rawQuery("SELECT * FROM tbl_player", null);
 	        break;
-	    case 2:
+	    case PLAYER:
 	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element
 	    	cursor = db.rawQuery("SELECT * FROM tbl_player WHERE _id = ?", uri.getLastPathSegment().split(" ", 1));
 	        break;
 	    default:
-	        throw new IllegalArgumentException("Unknown URI");
+	        throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
 	    return cursor;
-	}
-
-	@Override
-	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }
