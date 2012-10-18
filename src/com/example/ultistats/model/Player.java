@@ -20,14 +20,19 @@ public class Player extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 	
+	public static final String ALL_URI = "/all";
+	public static final String NEW_URI = "/new";
+	
 	public static final int ALL = 1;
 	public static final int PLAYER = 2;
+	public static final int NEW = 3;
 	//This determines what uris go to this provider
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 	        UriMatcher.NO_MATCH);
 	static {
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/all", ALL);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + ALL_URI, ALL);
 	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", PLAYER);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + NEW_URI, NEW);
 	}
 	
 	//A wrapper class for database storage
@@ -89,10 +94,24 @@ public class Player extends Base {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public Uri insert(Uri uri, ContentValues values) {
+	    int uriType = sURIMatcher.match(uri);
+	    long id = 0;
+	    switch (uriType) {
+	        case NEW:
+	            id = db.insert(TABLE_NAME, null, values);
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Unknown URI: " + uri);
+	    }
+	    getContext().getContentResolver().notifyChange(uri, null);
+	    
+	    return Uri.withAppendedPath(Player.CONTENT_URI, String.valueOf(id));
+	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-	String[] selectionArgs) {
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 	    int uriType = sURIMatcher.match(uri);
 	    int rowsUpdated = 0;
 	    switch (uriType) {
@@ -102,7 +121,7 @@ public class Player extends Base {
 	        default:
 	            throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
-	    //do i need this?
+	    
 	    getContext().getContentResolver().notifyChange(uri, null);
 	    return rowsUpdated;
 	}

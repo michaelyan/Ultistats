@@ -23,7 +23,9 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -43,8 +45,8 @@ public class PlayerListActivity extends LoaderActivity {
         getSupportLoaderManager().initLoader(0, null, this);
         
         //Copy the database to the phone
-        Base b = new Base(this);
-        b.copyDatabase();
+//        Base b = new Base(this);
+//        b.copyDatabase();
 
         String[] columns = new String[] {
             "fname", "lname", "number"
@@ -82,6 +84,33 @@ public class PlayerListActivity extends LoaderActivity {
           });
     }
     
+    /**
+     * Menu stuff
+     */
+    @Override
+    //Create the action bar menu
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.player_list_menu, menu);
+        
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.add_player:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    public void newPlayer(MenuItem item) {
+    	Intent intent = new Intent(this, PlayerEditActivity.class);
+    	startActivity(intent);
+    }
+    
     //How to get ids of current item clicked on?
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
@@ -89,37 +118,33 @@ public class PlayerListActivity extends LoaderActivity {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
           MenuInflater inflater = mode.getMenuInflater();
-          inflater.inflate(R.menu.player_actions, menu);
+          inflater.inflate(R.menu.player_list_edit_menu, menu);
           return true;
         }
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-          return false;
+        	return false;
         }
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-          switch (item.getItemId()) {
-          case R.id.player_edit:
-                Intent intent = new Intent(getApplicationContext(), PlayerEditActivity.class);
-                intent.putExtra(PLAYER_ID, (String) mode.getTag());
-                startActivity(intent);
-        	  
-        	  Log.i("The id is ", String.valueOf(mode.getTag()));
-            Toast.makeText(PlayerListActivity.this, "Selected player with id " + mode.getTag(),
-                Toast.LENGTH_LONG).show();
-            mode.finish();
-            return true;
-          default:
-            return false;
-          }
+            switch (item.getItemId()) {
+                case R.id.player_edit:
+                    Intent intent = new Intent(getApplicationContext(), PlayerEditActivity.class);
+                    intent.putExtra(PLAYER_ID, (String) mode.getTag());
+                    startActivity(intent);
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         // Called when the user exits the action mode
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-          mActionMode = null;
+        	mActionMode = null;
         }
       };
 
@@ -128,18 +153,19 @@ public class PlayerListActivity extends LoaderActivity {
     	Intent intent = new Intent(this, GroupListActivity.class);
     	startActivity(intent);
     }
-    
+
     //Loader functions
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
     	//What data to get
         CursorLoader cursorLoader = new CursorLoader(getApplicationContext(),
-	        Uri.withAppendedPath(Player.CONTENT_URI, "all"), null, null, null, null);
+	        Uri.withAppendedPath(Player.CONTENT_URI, Player.ALL_URI), null, null, null, null);
         return cursorLoader;
     }
     
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
+    	cursor.setNotificationUri(this.getContentResolver(), Player.CONTENT_URI);
     	adapter.swapCursor(cursor);
     }
     

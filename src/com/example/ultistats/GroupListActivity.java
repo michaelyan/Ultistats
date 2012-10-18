@@ -174,11 +174,11 @@ public class GroupListActivity extends LoaderActivity {
         switch (id) {
             case 1:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-                Uri.withAppendedPath(Group.CONTENT_URI, "all"), null, null, null, null);
+                Uri.withAppendedPath(Group.CONTENT_URI, Group.ALL_URI), null, null, null, null);
                 break;
             case 2:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-                Uri.withAppendedPath(Group.CONTENT_URI, "players"), null, null, null, null);
+                Uri.withAppendedPath(Group.CONTENT_URI, Group.PLAYERS_URI), null, null, null, null);
                 break;
             default:
                 cursorLoader = null;
