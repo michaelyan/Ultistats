@@ -74,8 +74,8 @@ public class PlayerListActivity extends LoaderActivity {
               if (mActionMode != null)
                 return false;
               
-              Log.i("id clicked", String.valueOf(id));
               mActionMode = PlayerListActivity.this.startActionMode(mActionModeCallback);
+              mActionMode.setTag(new Integer((int)id));
               view.setSelected(true);
               return true;
 			}
@@ -101,10 +101,10 @@ public class PlayerListActivity extends LoaderActivity {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
           switch (item.getItemId()) {
-          case R.id.toast:
-        	  Log.i("The id is ", String.valueOf(mode.getTitle()));
-//            Toast.makeText(PlayerListActivity.this, "Selected menu",
-//                Toast.LENGTH_LONG).show();
+          case R.id.edit:
+        	  Log.i("The id is ", String.valueOf(mode.getTag()));
+            Toast.makeText(PlayerListActivity.this, "Selected player with id " + mode.getTag(),
+                Toast.LENGTH_LONG).show();
             mode.finish();
             return true;
           default:
