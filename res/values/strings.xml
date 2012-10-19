@@ -34,5 +34,6 @@
     <string name="player_edit_fname_hint">First Name</string>
     <string name="player_edit_lname_hint">Last Name</string>
     <string name="player_edit_number_hint">Number</string>
+    <string name="group_edit_title">Edit Group</string>
 
 </resources>

@@ -78,6 +78,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.myfirstapp.MainActivity" />
         </activity>
+        <activity
+            android:name=".GroupEditActivity"
+            android:label="@string/group_edit_title" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myfirstapp.MainActivity" />
+        </activity>
         
     </application>
 

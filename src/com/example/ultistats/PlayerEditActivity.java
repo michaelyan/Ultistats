@@ -13,6 +13,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,17 +64,15 @@ public class PlayerEditActivity extends FragmentActivity {
     	String number = numberEditText.getText().toString();
     	
     	if (fname.length() == 0 && lname.length() == 0) {
-    		EditText focus = null;
-    		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+    		fnameEditText.setError("First name required");
+    		fnameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+    		    @Override
+    		    public void onFocusChange(View v, boolean hasFocus) {
+    		    	fnameEditText.setError(null);
+    		    }
+    		});
     		
-    		//find a way to get the error to display in only the focused box
-    		if (fnameEditText.hasFocus())
-    			focus = fnameEditText;
-    		else if (lnameEditText.hasFocus())
-    			focus = lnameEditText;
-    		
-    		focus.setError("First or last name required");
-    		
+//    		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 //    		alertDialog.setTitle("Error");
 //    		alertDialog.setMessage("First name or last name required");
 //    		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
