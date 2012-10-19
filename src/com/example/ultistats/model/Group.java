@@ -1,5 +1,6 @@
 package com.example.ultistats.model;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -16,7 +17,6 @@ public class Group extends Base {
 	//Must be the same name as the full class path
 	private static final String AUTHORITY = "com.example.ultistats.model.Group";
 	private static final String GROUP_BASE_PATH = "groups";
-	private static final String TABLE_NAME = "tbl_group";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + GROUP_BASE_PATH);
 	
@@ -27,8 +27,8 @@ public class Group extends Base {
 	
 	public static final int ALL = 1;
 	public static final int PLAYERS = 2;
-	public static final int GROUP = 2;
-	public static final int NEW = 2;
+	public static final int GROUP = 3;
+	public static final int NEW = 4;
 	
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	
@@ -39,6 +39,7 @@ public class Group extends Base {
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NEW_URI, NEW); //New group
 	}
 	
+	private static final String TABLE_NAME = "tbl_group";
 	public static final String GROUP_NAME_COLUMN = "group_name";
 
 	public static class GroupRow {
@@ -99,9 +100,11 @@ public class Group extends Base {
 	        default:
 	            throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
+	    Uri insertUri = ContentUris.withAppendedId(Group.CONTENT_URI, id);
+	    getContext().getContentResolver().notifyChange(insertUri, null);
 	    getContext().getContentResolver().notifyChange(Group.CONTENT_URI, null);
 	    
-	    return Uri.withAppendedPath(Player.CONTENT_URI, String.valueOf(id));
+	    return Uri.withAppendedPath(Group.CONTENT_URI, String.valueOf(id));
 	}
 
 	@Override
@@ -132,8 +135,9 @@ public class Group extends Base {
 	    	query = "SELECT _id, group_name, count(group_id) as player_count " +
 	    			"FROM tbl_group " +
 	    			"LEFT JOIN tbl_player_group ON tbl_player_group.group_id = tbl_group._id " +
-	    			"GROUP BY group_id " +
+	    			"GROUP BY tbl_group._id " +
 	    			"ORDER by group_name DESC";
+	    	query = "SELECT * from tbl_group";
 	    	cursor = db.rawQuery(query, null);
 	        break;
 	    case PLAYERS:
@@ -148,6 +152,12 @@ public class Group extends Base {
 	    default:
 	        throw new IllegalArgumentException("Unknown URI");
 	    }
+    	//Make the cursor listen for changes in the database
+    	cursor.setNotificationUri(
+    			getContext().getContentResolver(), Group.CONTENT_URI);
+//    			this.getContentResolver(), Uri.withAppendedPath(Group.CONTENT_URI, Group.ALL_URI));
+    	Log.i("query called", "mofo");
+    	
 	    return cursor;
 	}
 }

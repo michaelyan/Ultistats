@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,7 +49,6 @@ public class GroupListActivity extends LoaderActivity {
         listView.setOnChildClickListener(new OnChildClickListener() {@Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
             int childPosition, long id) {
-        		Log.i("the id ajsldkjf is", String.valueOf(id));
                 Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
                 intent.putExtra(PlayerListActivity.PLAYER_ID, String.valueOf(id));
                 startActivity(intent);
@@ -57,9 +57,9 @@ public class GroupListActivity extends LoaderActivity {
         });
     }
     
-    /**
-     * Menu stuff
-     */
+    /**************************************************************************
+     * Menu Actions ***********************************************************
+     **************************************************************************/
     @Override
     //Create the action bar menu
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,7 +86,7 @@ public class GroupListActivity extends LoaderActivity {
 
     public class ExpandableAdapter extends BaseExpandableListAdapter {
         private ArrayList<Group.GroupRow> groups = new ArrayList<Group.GroupRow>();
-        private HashMap<Integer, ArrayList<Player.PlayerRow>> playerGroupHashMap = new HashMap<Integer, ArrayList<Player.PlayerRow>>();
+        private SparseArray<ArrayList<Player.PlayerRow>> playerGroupHashMap = new SparseArray<ArrayList<Player.PlayerRow>>();
 
         private Cursor groupCursor;
         private Cursor playerCursor;
@@ -121,8 +121,8 @@ public class GroupListActivity extends LoaderActivity {
             	
             	Group.GroupRow gr = new Group.GroupRow(_id, groupName);
             	groups.add(gr);
-            	//Add the group names to the hashmap
-            	playerGroupHashMap.put(Integer.valueOf(_id), new ArrayList<Player.PlayerRow>());
+            	//Add the group names to the HashMap
+            	playerGroupHashMap.put(_id, new ArrayList<Player.PlayerRow>());
                 groupCursor.moveToNext();
             }
         }
@@ -219,10 +219,6 @@ public class GroupListActivity extends LoaderActivity {
 
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
-    	//Make the cursor listen for changes in the database
-    	cursor.setNotificationUri(
-    			this.getContentResolver(), Uri.withAppendedPath(Group.CONTENT_URI, Group.ALL_URI));
-    	
         if (loader.getId() == Group.ALL) 
         	adapter.setGroupCursor(cursor);
         else if (loader.getId() == Group.PLAYERS) 

@@ -1,5 +1,6 @@
 package com.example.ultistats.model;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -105,7 +106,7 @@ public class Player extends Base {
 	
 	public Uri insert(Uri uri, ContentValues values) {
 	    int uriType = sURIMatcher.match(uri);
-	    long id = 0;
+	    long id;
 	    switch (uriType) {
 	        case NEW:
 	            id = db.insert(TABLE_NAME, null, values);
@@ -114,8 +115,10 @@ public class Player extends Base {
 	            throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
 	    getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
+//	    getContext().getContentResolver().notifyChange(
+//	    		Uri.withAppendedPath(Group.CONTENT_URI, "non-existent"), null);
 	    
-	    return Uri.withAppendedPath(Player.CONTENT_URI, String.valueOf(id));
+	    return ContentUris.withAppendedId(Player.CONTENT_URI, id);
 	}
 
 	@Override
@@ -150,6 +153,11 @@ public class Player extends Base {
 	    default:
 	        throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
+	    
+    	//Make the cursor listen for changes in the database
+    	cursor.setNotificationUri(
+    			getContext().getContentResolver(), Player.CONTENT_URI);
+    	
 	    return cursor;
 	}
 }

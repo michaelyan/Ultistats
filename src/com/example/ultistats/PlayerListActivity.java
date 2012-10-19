@@ -167,10 +167,6 @@ public class PlayerListActivity extends LoaderActivity {
     
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
-    	//Make the cursor listen for changes in the database
-    	cursor.setNotificationUri(
-//    			this.getContentResolver(), Uri.withAppendedPath(Player.CONTENT_URI, Player.ALL_URI));
-    			this.getContentResolver(), Player.CONTENT_URI);
     	adapter.swapCursor(cursor);
     }
     
