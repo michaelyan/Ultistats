@@ -10,6 +10,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
@@ -25,6 +27,7 @@ import com.example.ultistats.model.Player.PlayerRow;
 
 public class GroupListActivity extends LoaderActivity {
 
+	public static final String GROUP_ID = "intent_group_id";
     private ExpandableAdapter adapter;
     private ExpandableListView listView;
 
@@ -51,6 +54,33 @@ public class GroupListActivity extends LoaderActivity {
             }
         });
     }
+    
+    /**
+     * Menu stuff
+     */
+    @Override
+    //Create the action bar menu
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.group_list_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.add_group:
+            	newGroup(item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    public void newGroup(MenuItem item) {
+    	Intent intent = new Intent(this, GroupEditActivity.class);
+    	startActivity(intent);
+    } 
 
     public class ExpandableAdapter extends BaseExpandableListAdapter {
         private ArrayList <String> groups = new ArrayList <String> ();

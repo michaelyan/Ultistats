@@ -22,16 +22,21 @@ public class Group extends Base {
 	
 	public static final String ALL_URI = "/all";
 	public static final String PLAYERS_URI = "/players";
+	public static final String NEW_URI = "/new";
 	
 	public static final int ALL = 1;
 	public static final int PLAYERS = 2;
+	public static final int GROUP = 2;
+	public static final int NEW = 2;
+	
 	//This determines what uris go to this provider
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 	        UriMatcher.NO_MATCH);
 	static {
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + ALL_URI, ALL);
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + PLAYERS_URI, PLAYERS);
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/#", 2);
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/#", GROUP);
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NEW_URI, NEW);
 	}
 
 	@Override

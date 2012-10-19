@@ -63,14 +63,24 @@ public class PlayerEditActivity extends FragmentActivity {
     	String number = numberEditText.getText().toString();
     	
     	if (fname.length() == 0 && lname.length() == 0) {
+    		EditText focus = null;
     		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-    		alertDialog.setTitle("Error");
-    		alertDialog.setMessage("First name or last name required");
-    		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-    		   public void onClick(DialogInterface dialog, int which) {
-    		   }
-    		});
-    		alertDialog.show();
+    		
+    		//find a way to get the error to display in only the focused box
+    		if (fnameEditText.hasFocus())
+    			focus = fnameEditText;
+    		else if (lnameEditText.hasFocus())
+    			focus = lnameEditText;
+    		
+    		focus.setError("First or last name required");
+    		
+//    		alertDialog.setTitle("Error");
+//    		alertDialog.setMessage("First name or last name required");
+//    		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+//    		   public void onClick(DialogInterface dialog, int which) {
+//    		   }
+//    		});
+//    		alertDialog.show();
     		return;
     	}
     	

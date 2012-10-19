@@ -31,10 +31,10 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class PlayerListActivity extends LoaderActivity {
 
-	//When you click on a player, store the id of the clicked player here so you can pass it on
-	public static final String PLAYER_ID = "com.example.ultistats.player_id";
+	//When you click on a player, this is the key of the value you are storing in the intent
+	public static final String PLAYER_ID = "intent_player_id";
     private ListView listView;
-    private ActionMode mActionMode;
+    private ActionMode actionMode;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,11 +73,11 @@ public class PlayerListActivity extends LoaderActivity {
         listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id) {
-              if (mActionMode != null)
+              if (actionMode != null)
                 return false;
               
-              mActionMode = PlayerListActivity.this.startActionMode(mActionModeCallback);
-              mActionMode.setTag(String.valueOf(id));
+              actionMode = PlayerListActivity.this.startActionMode(actionModeCallback);
+              actionMode.setTag(String.valueOf(id));
               view.setSelected(true);
               return true;
 			}
@@ -91,7 +91,6 @@ public class PlayerListActivity extends LoaderActivity {
     //Create the action bar menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.player_list_menu, menu);
-        
         return super.onCreateOptionsMenu(menu);
     }
     
@@ -100,6 +99,7 @@ public class PlayerListActivity extends LoaderActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.add_player:
+            	newPlayer(item);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -112,7 +112,7 @@ public class PlayerListActivity extends LoaderActivity {
     }
     
     //How to get ids of current item clicked on?
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called
         @Override
@@ -144,7 +144,7 @@ public class PlayerListActivity extends LoaderActivity {
         // Called when the user exits the action mode
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-        	mActionMode = null;
+        	actionMode = null;
         }
       };
 
