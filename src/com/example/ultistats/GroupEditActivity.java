@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.view.View.OnFocusChangeListener;
 
 public class GroupEditActivity extends FragmentActivity {
 	
@@ -29,7 +30,7 @@ public class GroupEditActivity extends FragmentActivity {
         setContentView(R.layout.group_edit);
         
         groupId = intent.getStringExtra(GroupListActivity.GROUP_ID);
-        groupNameEditText = (EditText) findViewById(R.id.edit_fname);
+        groupNameEditText = (EditText) findViewById(R.id.edit_group_name);
         
         //Creating a new group
         if (groupId == null)
@@ -44,19 +45,22 @@ public class GroupEditActivity extends FragmentActivity {
     
     public void saveGroup(View view) {
     	ContentValues groupValues = new ContentValues();
-
-//    	if (fname.length() == 0 && lname.length() == 0) {
-//    		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-//    		alertDialog.setTitle("Error");
-//    		alertDialog.setMessage("First name or last name required");
-//    		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-//    		   public void onClick(DialogInterface dialog, int which) {
-//    		   }
-//    		});
-//    		alertDialog.show();
-//    		return;
-//    	}
     	
+    	String groupName = groupNameEditText.getText().toString();
+    	
+    	if (groupName.length() == 0) {
+    		groupNameEditText.setError("Group name required");
+    		groupNameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+    		    @Override
+    		    public void onFocusChange(View v, boolean hasFocus) {
+    		    	groupNameEditText.setError(null);
+    		    }
+    		});
+    		return;
+    	}
+    	
+		groupValues.put(Group.GROUP_NAME_COLUMN, groupName); 
+
     	if (groupId == null) {
 	    	getContentResolver().insert(
 	    		Uri.withAppendedPath(Group.CONTENT_URI, Group.NEW_URI), groupValues

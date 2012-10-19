@@ -1,6 +1,7 @@
 package com.example.ultistats;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -47,6 +48,7 @@ public class GroupListActivity extends LoaderActivity {
         listView.setOnChildClickListener(new OnChildClickListener() {@Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
             int childPosition, long id) {
+        		Log.i("the id ajsldkjf is", String.valueOf(id));
                 Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
                 intent.putExtra(PlayerListActivity.PLAYER_ID, String.valueOf(id));
                 startActivity(intent);
@@ -83,8 +85,8 @@ public class GroupListActivity extends LoaderActivity {
     } 
 
     public class ExpandableAdapter extends BaseExpandableListAdapter {
-        private ArrayList <String> groups = new ArrayList <String> ();
-        private ArrayList <ArrayList<PlayerRow>> players = new ArrayList<ArrayList<PlayerRow>> ();
+        private ArrayList<Group.GroupRow> groups = new ArrayList<Group.GroupRow>();
+        private HashMap<Integer, ArrayList<Player.PlayerRow>> playerGroupHashMap = new HashMap<Integer, ArrayList<Player.PlayerRow>>();
 
         private Cursor groupCursor;
         private Cursor playerCursor;
@@ -114,32 +116,28 @@ public class GroupListActivity extends LoaderActivity {
         public void setupGroups() {
             groupCursor.moveToFirst();
             while (groupCursor.isAfterLast() == false) {
-                groups.add(groupCursor.getString(groupCursor.getColumnIndex("group_name")));
+            	int _id = groupCursor.getInt(groupCursor.getColumnIndex("_id"));
+            	String groupName = groupCursor.getString(groupCursor.getColumnIndex("group_name"));
+            	
+            	Group.GroupRow gr = new Group.GroupRow(_id, groupName);
+            	groups.add(gr);
+            	//Add the group names to the hashmap
+            	playerGroupHashMap.put(Integer.valueOf(_id), new ArrayList<Player.PlayerRow>());
                 groupCursor.moveToNext();
             }
         }
 
         public void setupPlayers() {
             playerCursor.moveToFirst();
-            int i = 0;
-            players.add(new ArrayList <PlayerRow> ());
-
             while (!playerCursor.isAfterLast()) {
                 int _id = playerCursor.getInt(playerCursor.getColumnIndex("_id"));
+                Integer group_id = Integer.valueOf(playerCursor.getInt(playerCursor.getColumnIndex("group_id")));
                 String fname = playerCursor.getString(playerCursor.getColumnIndex("fname"));
                 String lname = playerCursor.getString(playerCursor.getColumnIndex("lname"));
 
                 Player.PlayerRow pr = new Player.PlayerRow(_id, fname, lname);
-                players.get(i).add(pr);
-
-                int prevGroupId = playerCursor.getInt(playerCursor.getColumnIndex("group_id"));
+            	playerGroupHashMap.get(group_id).add(pr);
                 playerCursor.moveToNext();
-                if (!playerCursor.isAfterLast()) {
-                    if (playerCursor.getInt(playerCursor.getColumnIndex("group_id")) != prevGroupId) {
-                        i++;
-                        players.add(new ArrayList <PlayerRow> ());
-                    }
-                }
             }
         }
 
@@ -161,12 +159,13 @@ public class GroupListActivity extends LoaderActivity {
         }
 
         public String getGroup(int groupPosition) {
-            String group = groups.get(groupPosition);
+            String group = groups.get(groupPosition).getGroupName();
             return group;
         }
 
         public PlayerRow getChild(int groupPosition, int childPosition) {
-            PlayerRow player = players.get(groupPosition).get(childPosition);
+        	int groupId = (int) getGroupId(groupPosition);
+            PlayerRow player = playerGroupHashMap.get(groupId).get(childPosition);
             return player;
         }
 
@@ -175,20 +174,21 @@ public class GroupListActivity extends LoaderActivity {
         }
 
         public int getChildrenCount(int groupPosition) {
-            groupCursor.moveToPosition(groupPosition);
-            int childrenCount = groupCursor.getInt(groupCursor.getColumnIndex("player_count"));
-            return childrenCount;
+        	int groupId = (int) getGroupId(groupPosition);
+            return playerGroupHashMap.get(groupId).size();
         }
 
         public long getGroupId(int groupPosition) {
-            return groupPosition;
+        	return groups.get(groupPosition).getId();
         }
 
         public long getChildId(int groupPosition, int childPosition) {
-            PlayerRow player = players.get(groupPosition).get(childPosition);
+        	int groupId = (int) getGroupId(groupPosition);
+            PlayerRow player = playerGroupHashMap.get(groupId).get(childPosition);
             return player.getId();
         }
 
+        //What are these
         public boolean hasStableIds() {
             return true;
         }
@@ -219,8 +219,14 @@ public class GroupListActivity extends LoaderActivity {
 
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
-        if (loader.getId() == Group.ALL) adapter.setGroupCursor(cursor);
-        else if (loader.getId() == Group.PLAYERS) adapter.setPlayerCursor(cursor);
+    	//Make the cursor listen for changes in the database
+    	cursor.setNotificationUri(
+    			this.getContentResolver(), Uri.withAppendedPath(Group.CONTENT_URI, Group.ALL_URI));
+    	
+        if (loader.getId() == Group.ALL) 
+        	adapter.setGroupCursor(cursor);
+        else if (loader.getId() == Group.PLAYERS) 
+        	adapter.setPlayerCursor(cursor);
 
         if (adapter.ready()) {
             adapter.setupGroups();

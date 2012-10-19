@@ -5,28 +5,16 @@
     android:orientation="vertical">
 
     <EditText
-        android:id="@+id/edit_fname"
+        android:id="@+id/edit_group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:hint="@string/player_edit_fname_hint"
+        android:hint="@string/group_edit_group_name_hint"
         android:singleLine="true" />
-
-    <EditText android:id="@+id/edit_lname"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/player_edit_lname_hint" />
-    <EditText android:id="@+id/edit_number"
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="@string/player_edit_number_hint" />
     
-	<Button android:id="@+id/player_save"
+	<Button android:id="@+id/group_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Player"
-        android:onClick="savePlayer" />
+        android:text="Save Group"
+        android:onClick="saveGroup" />
 </LinearLayout>

@@ -16,7 +16,6 @@ public class Player extends Base {
 	//Must be the same name as the full class path
 	private static final String AUTHORITY = "com.example.ultistats.model.Player";
 	private static final String PLAYER_BASE_PATH = "players";
-	private static final String TABLE_NAME = "tbl_player";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 	
@@ -35,7 +34,13 @@ public class Player extends Base {
 	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + NEW_URI, NEW);
 	}
 	
-	//A wrapper class for database storage
+	private static final String TABLE_NAME = "tbl_player";
+	public static final String FIRST_NAME_COLUMN = "fname";
+	public static final String LAST_NAME_COLUMN = "lname";
+	public static final String NUMBER_COLUMN = "number";
+	
+	
+	//A class for wrapping around database rows
 	public static class PlayerRow {
 		private int _id;
 		private String fname;
@@ -61,7 +66,7 @@ public class Player extends Base {
 			return lname;
 		}
 		
-		public void setPlayerId(int _id) {
+		public void setId(int _id) {
 			this._id = _id;
 		}
 
@@ -73,6 +78,9 @@ public class Player extends Base {
 			this.lname = lname;
 		}
 
+		public String toString() {
+			return '(' + this.fname + ',' + this.lname + ')';
+		}
 	}
 
 	@Override
@@ -105,7 +113,7 @@ public class Player extends Base {
 	        default:
 	            throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
-	    getContext().getContentResolver().notifyChange(uri, null);
+	    getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
 	    
 	    return Uri.withAppendedPath(Player.CONTENT_URI, String.valueOf(id));
 	}
@@ -122,7 +130,7 @@ public class Player extends Base {
 	            throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
 	    
-	    getContext().getContentResolver().notifyChange(uri, null);
+	    getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
 	    return rowsUpdated;
 	}
 

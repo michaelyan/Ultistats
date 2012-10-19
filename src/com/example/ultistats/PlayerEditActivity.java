@@ -44,13 +44,13 @@ public class PlayerEditActivity extends FragmentActivity {
 	        Uri.withAppendedPath(Player.CONTENT_URI, playerId), null, null, null, null);
         
         cursor.moveToFirst();
-        String fname = cursor.getString(cursor.getColumnIndex("fname"));
+        String fname = cursor.getString(cursor.getColumnIndex(Player.FIRST_NAME_COLUMN));
         fnameEditText.setText(fname);
         
-        String lname = cursor.getString(cursor.getColumnIndex("lname"));
+        String lname = cursor.getString(cursor.getColumnIndex(Player.LAST_NAME_COLUMN));
         lnameEditText.setText(lname);
         
-        String number = cursor.getString(cursor.getColumnIndex("number"));
+        String number = cursor.getString(cursor.getColumnIndex(Player.NUMBER_COLUMN));
         numberEditText.setText(number);
         
         cursor.close();
@@ -83,9 +83,9 @@ public class PlayerEditActivity extends FragmentActivity {
     		return;
     	}
     	
-		playerValues.put("fname", fname); 
-		playerValues.put("lname", lname);
-		playerValues.put("number", number);
+		playerValues.put(Player.FIRST_NAME_COLUMN, fname); 
+		playerValues.put(Player.LAST_NAME_COLUMN, lname);
+		playerValues.put(Player.NUMBER_COLUMN, number);
 		
     	if (playerId == null) {
 	    	getContentResolver().insert(
