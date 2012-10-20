@@ -132,12 +132,7 @@ public class Group extends Base {
 	    
 	    switch(uriType) {
 	    case ALL:
-	    	query = "SELECT _id, group_name, count(group_id) as player_count " +
-	    			"FROM tbl_group " +
-	    			"LEFT JOIN tbl_player_group ON tbl_player_group.group_id = tbl_group._id " +
-	    			"GROUP BY tbl_group._id " +
-	    			"ORDER by group_name DESC";
-	    	query = "SELECT * from tbl_group";
+	    	query = "SELECT _id, group_name from tbl_group";
 	    	cursor = db.rawQuery(query, null);
 	        break;
 	    case PLAYERS:

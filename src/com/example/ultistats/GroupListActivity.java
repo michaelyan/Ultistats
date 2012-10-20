@@ -114,6 +114,7 @@ public class GroupListActivity extends LoaderActivity {
         }
 
         public void setupGroups() {
+        	groups.clear();
             groupCursor.moveToFirst();
             while (groupCursor.isAfterLast() == false) {
             	int _id = groupCursor.getInt(groupCursor.getColumnIndex("_id"));
@@ -125,6 +126,7 @@ public class GroupListActivity extends LoaderActivity {
             	playerGroupHashMap.put(_id, new ArrayList<Player.PlayerRow>());
                 groupCursor.moveToNext();
             }
+            Log.i("group's length is", String.valueOf(groups.size()));
         }
 
         public void setupPlayers() {
