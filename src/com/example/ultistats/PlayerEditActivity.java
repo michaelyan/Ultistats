@@ -87,11 +87,9 @@ public class PlayerEditActivity extends FragmentActivity {
 		playerValues.put(Player.LAST_NAME_COLUMN, lname);
 		playerValues.put(Player.NUMBER_COLUMN, number);
 		
-    	if (playerId == null) {
-	    	getContentResolver().insert(
-	    		Uri.withAppendedPath(Player.CONTENT_URI, Player.NEW_URI), playerValues
-    		);
-    	} else {
+    	if (playerId == null)
+	    	getContentResolver().insert(Player.NEW_URI, playerValues);
+    	else  {
 	    	String selectionClause = "_id = ?";
 	    	String[] selectionArgs = {playerId};
 	    	getContentResolver().update(

@@ -14,25 +14,28 @@ public class Player extends Base {
 
 	private SQLiteDatabase db;
 	
-	//Must be the same name as the full class path
 	private static final String AUTHORITY = "com.example.ultistats.model.Player";
 	private static final String PLAYER_BASE_PATH = "players";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 	
-	public static final String ALL_URI = "/all";
-	public static final String NEW_URI = "/new";
+	public static final String ALL = "/all";
+	public static final String PLAYER = "/#";
+	public static final String NEW = "/new";
 	
-	public static final int ALL = 1;
-	public static final int PLAYER = 2;
-	public static final int NEW = 3;
-	//This determines what uris go to this provider
+	public static final int ALL_CODE = 1;
+	public static final int PLAYER_CODE = 2;
+	public static final int NEW_CODE = 3;
+	
+	public static final Uri ALL_URI = Uri.withAppendedPath(Player.CONTENT_URI, ALL);
+	public static final Uri NEW_URI = Uri.withAppendedPath(Player.CONTENT_URI, NEW);
+	
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 	        UriMatcher.NO_MATCH);
 	static {
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + ALL_URI, ALL);
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", PLAYER);
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + NEW_URI, NEW);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + ALL, ALL_CODE);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", PLAYER_CODE);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + NEW, NEW_CODE);
 	}
 	
 	private static final String TABLE_NAME = "tbl_player";
@@ -108,7 +111,7 @@ public class Player extends Base {
 	    int uriType = sURIMatcher.match(uri);
 	    long id;
 	    switch (uriType) {
-	        case NEW:
+	        case NEW_CODE:
 	            id = db.insert(TABLE_NAME, null, values);
 	            break;
 	        default:
@@ -126,7 +129,7 @@ public class Player extends Base {
 	    int uriType = sURIMatcher.match(uri);
 	    int rowsUpdated = 0;
 	    switch (uriType) {
-	        case PLAYER:
+	        case PLAYER_CODE:
 	            rowsUpdated = db.update(TABLE_NAME, values, selection, selectionArgs);
 	            break;
 	        default:
@@ -143,10 +146,10 @@ public class Player extends Base {
 		Cursor cursor = null;
 	    int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
-	    case ALL:
+	    case ALL_CODE:
 	    	cursor = db.rawQuery("SELECT * FROM tbl_player", null);
 	        break;
-	    case PLAYER:
+	    case PLAYER_CODE:
 	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element
 	    	cursor = db.rawQuery("SELECT * FROM tbl_player WHERE _id = ?", uri.getLastPathSegment().split(" ", 1));
 	        break;

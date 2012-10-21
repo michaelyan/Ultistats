@@ -12,9 +12,9 @@
         android:hint="@string/group_edit_group_name_hint"
         android:singleLine="true" />
     
-	<Button android:id="@+id/group_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Group"
-        android:onClick="saveGroup" />
+   	<ListView
+		android:id="@android:id/android:list"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+   	
 </LinearLayout>

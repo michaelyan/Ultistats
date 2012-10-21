@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -29,32 +30,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class PlayerListActivity extends LoaderActivity {
-
-	//When you click on a player, this is the key of the value you are storing in the intent
+public class PlayerListActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
+ //When you click on a player, this is the key of the value you are storing in the intent
 	public static final String PLAYER_ID = "intent_player_id";
-    private ListView listView;
-    private ActionMode actionMode;
+    private ListView playerListView;
+    private SimpleCursorAdapter adapter;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player_list);
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(Player.ALL_CODE, null, this);
         
         //Copy the database to the phone
         Base b = new Base(this);
         b.copyDatabase();
         
         setupAdapter();
-	    bindItemClick();
-	    bindItemLongClick();
+	    bindPlayerClick();
+	    bindPlayerLongClick();
 	}
     
     public void setupAdapter() {
         //The columns that should be bound to the UI
     	//don't hardcode this
-        String[] columns = new String[] { "fname", "lname", "number" };
+        String[] columns = new String[] { Player.FIRST_NAME_COLUMN, Player.LAST_NAME_COLUMN, Player.NUMBER_COLUMN };
         //The textviews that will display the data
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
         
@@ -62,13 +62,13 @@ public class PlayerListActivity extends LoaderActivity {
         adapter = new SimpleCursorAdapter(
 	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
 
-        listView = (ListView) findViewById(android.R.id.list);
-        listView.setAdapter(adapter);
+        playerListView = (ListView) findViewById(android.R.id.list);
+        playerListView.setAdapter(adapter);
     }
     
-    public void bindItemClick() {
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView <?> parent, View view, int position, long id) {
+    public void bindPlayerClick() {
+        playerListView.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
                 intent.putExtra(PLAYER_ID, String.valueOf(id));
                 startActivity(intent);
@@ -76,9 +76,22 @@ public class PlayerListActivity extends LoaderActivity {
         });
     }
     
-    public void bindItemLongClick() {
-        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-        	
+    public void bindPlayerLongClick() {
+        playerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+		    private ActionMode actionMode;
+		    
+        	@Override
+            public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id) {
+                if (actionMode != null)
+                	return false;
+
+                String playerId = String.valueOf(id);
+                actionMode = PlayerListActivity.this.startActionMode(actionModeCallback);
+                actionMode.setTag(playerId);
+                view.setSelected(true);
+                return true;
+            }
+
 		    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
 		        @Override
 		        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -111,17 +124,6 @@ public class PlayerListActivity extends LoaderActivity {
 		            actionMode = null;
 		        }
 		    };
-	        	
-        	@Override
-            public boolean onItemLongClick(AdapterView <?> adapter, View view, int position, long id) {
-                if (actionMode != null)
-                	return false;
-
-                actionMode = PlayerListActivity.this.startActionMode(actionModeCallback);
-                actionMode.setTag(String.valueOf(id));
-                view.setSelected(true);
-                return true;
-            }
         });
     }
     
@@ -161,7 +163,7 @@ public class PlayerListActivity extends LoaderActivity {
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         CursorLoader cursorLoader = new CursorLoader(getApplicationContext(),
-	        Uri.withAppendedPath(Player.CONTENT_URI, Player.ALL_URI), null, null, null, null);
+	        Player.ALL_URI, null, null, null, null);
         return cursorLoader;
     }
     

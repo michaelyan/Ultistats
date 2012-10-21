@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -22,16 +24,21 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
+import android.view.ActionMode;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.view.MenuInflater;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 
 import com.example.ultistats.model.Group;
 import com.example.ultistats.model.Player;
 import com.example.ultistats.model.Player.PlayerRow;
 
-public class GroupListActivity extends LoaderActivity {
+public class GroupListActivity extends FragmentActivity implements LoaderCallbacks<Cursor>  {
 
 	public static final String GROUP_ID = "intent_group_id";
     private ExpandableAdapter adapter;
-    private ExpandableListView listView;
+    private ExpandableListView groupListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,13 +47,17 @@ public class GroupListActivity extends LoaderActivity {
         adapter = new ExpandableAdapter();
 
         //Asynchronously load the data  for the player list
-        getSupportLoaderManager().initLoader(Group.ALL, null, this);
-        getSupportLoaderManager().initLoader(Group.PLAYERS, null, this);
+        getSupportLoaderManager().initLoader(Group.ALL_CODE, null, this);
+        getSupportLoaderManager().initLoader(Group.PLAYERS_CODE, null, this);
 
-        listView = (ExpandableListView) findViewById(R.id.list_group);
+        groupListView = (ExpandableListView) findViewById(R.id.group_list);
+        bindPlayerClick();
+        bindItemLongClick();
 
-        /*How do you know that the cursor has results before setting the adapter?*/
-        listView.setOnChildClickListener(new OnChildClickListener() {@Override
+    }
+    
+    public void bindPlayerClick() {
+        groupListView.setOnChildClickListener(new OnChildClickListener() {@Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
             int childPosition, long id) {
                 Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
@@ -57,11 +68,60 @@ public class GroupListActivity extends LoaderActivity {
         });
     }
     
+    public void bindItemLongClick() {
+        groupListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        	private ActionMode actionMode;
+        	@Override
+            public boolean onItemLongClick(AdapterView <?> adapter, View view, int position, long id) {
+                if (actionMode != null)
+                	return false;
+
+                String groupId = String.valueOf(groupListView.getPackedPositionGroup(id));
+                actionMode = GroupListActivity.this.startActionMode(actionModeCallback);
+                actionMode.setTag(String.valueOf(groupId));
+                view.setSelected(true);
+                return true;
+            }
+
+		    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+		        @Override
+		        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		            MenuInflater inflater = mode.getMenuInflater();
+		            inflater.inflate(R.menu.group_list_edit_menu, menu);
+		            return true;
+		        }
+
+		        @Override
+		        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		            return false;
+		        }
+
+		        @Override
+		        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		            switch (item.getItemId()) {
+		                case R.id.group_edit:
+		                    Intent intent = new Intent(getApplicationContext(), GroupEditActivity.class);
+		                    intent.putExtra(GROUP_ID, (String) mode.getTag());
+		                    startActivity(intent);
+		                    mode.finish();
+		                    return true;
+		                default:
+		                    return false;
+		            }
+		        }
+
+		        @Override
+		        public void onDestroyActionMode(ActionMode mode) {
+		            actionMode = null;
+		        }
+		    };
+        });
+    }
+    
     /**************************************************************************
      * Menu Actions ***********************************************************
      **************************************************************************/
     @Override
-    //Create the action bar menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.group_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -83,6 +143,9 @@ public class GroupListActivity extends LoaderActivity {
     	Intent intent = new Intent(this, GroupEditActivity.class);
     	startActivity(intent);
     } 
+    
+    
+    
 
     public class ExpandableAdapter extends BaseExpandableListAdapter {
         private ArrayList<Group.GroupRow> groups = new ArrayList<Group.GroupRow>();
@@ -152,7 +215,7 @@ public class GroupListActivity extends LoaderActivity {
         }
 
         public View getChildView(int groupPosition, int childPosition,
-        boolean isLastChild, View convertView, ViewGroup parent) {
+        		boolean isLastChild, View convertView, ViewGroup parent) {
             TextView view = new TextView(getApplicationContext());
             PlayerRow pr = getChild(groupPosition, childPosition);
             String name = pr.getFname() + pr.getLname();
@@ -181,6 +244,7 @@ public class GroupListActivity extends LoaderActivity {
         }
 
         public long getGroupId(int groupPosition) {
+        	Log.i("group id is", String.valueOf(groups.get(groupPosition).getId()));
         	return groups.get(groupPosition).getId();
         }
 
@@ -204,13 +268,13 @@ public class GroupListActivity extends LoaderActivity {
     public Loader <Cursor> onCreateLoader(int id, Bundle bundle) {
         CursorLoader cursorLoader;
         switch (id) {
-            case 1:
+            case Group.ALL_CODE:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-                Uri.withAppendedPath(Group.CONTENT_URI, Group.ALL_URI), null, null, null, null);
+	                Group.ALL_URI, null, null, null, null);
                 break;
-            case 2:
+            case Group.PLAYERS_CODE:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-                Uri.withAppendedPath(Group.CONTENT_URI, Group.PLAYERS_URI), null, null, null, null);
+	                Group.PLAYERS_URI, null, null, null, null);
                 break;
             default:
                 cursorLoader = null;
@@ -221,15 +285,15 @@ public class GroupListActivity extends LoaderActivity {
 
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
-        if (loader.getId() == Group.ALL) 
+        if (loader.getId() == Group.ALL_CODE) 
         	adapter.setGroupCursor(cursor);
-        else if (loader.getId() == Group.PLAYERS) 
+        else if (loader.getId() == Group.PLAYERS_CODE) 
         	adapter.setPlayerCursor(cursor);
 
         if (adapter.ready()) {
             adapter.setupGroups();
             adapter.setupPlayers();
-            listView.setAdapter(adapter);
+            groupListView.setAdapter(adapter);
         }
     }
 

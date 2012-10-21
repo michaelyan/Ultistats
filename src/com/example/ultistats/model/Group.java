@@ -20,23 +20,27 @@ public class Group extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + GROUP_BASE_PATH);
 	
+	public static final String ALL = "/all";
+	public static final String PLAYERS = "/players";
+	public static final String GROUP = "/#";
+	public static final String NEW = "/new";
 	
-	public static final String ALL_URI = "/all";
-	public static final String PLAYERS_URI = "/players";
-	public static final String NEW_URI = "/new";
+	public static final int ALL_CODE = 1;
+	public static final int PLAYERS_CODE = 2;
+	public static final int GROUP_CODE = 3;
+	public static final int NEW_CODE = 4;
 	
-	public static final int ALL = 1;
-	public static final int PLAYERS = 2;
-	public static final int GROUP = 3;
-	public static final int NEW = 4;
+	public static final Uri ALL_URI = Uri.withAppendedPath(Group.CONTENT_URI, ALL);
+	public static final Uri PLAYERS_URI = Uri.withAppendedPath(Group.CONTENT_URI, PLAYERS);
+	public static final Uri NEW_URI = Uri.withAppendedPath(Group.CONTENT_URI, NEW);
 	
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	
 	static {
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + ALL_URI, ALL); //Get all the groups (without players)
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + PLAYERS_URI, PLAYERS); //Get all the players
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/#", GROUP); //Get a single group
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NEW_URI, NEW); //New group
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + ALL, ALL_CODE); //Get all the groups (without players)
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + PLAYERS, PLAYERS_CODE); //Get all the players and their group info
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/#", GROUP_CODE); //Get a single group and all its players
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NEW, NEW_CODE); //New group
 	}
 	
 	private static final String TABLE_NAME = "tbl_group";
@@ -76,8 +80,6 @@ public class Group extends Base {
 		return true;
 	}
 	
-//	private static final String columns = "fname, lname";
-	
 	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
 		// TODO Auto-generated method stub
@@ -94,7 +96,7 @@ public class Group extends Base {
 	    int uriType = sURIMatcher.match(uri);
 	    long id = 0;
 	    switch (uriType) {
-	        case NEW:
+	        case NEW_CODE:
 	            id = db.insert(TABLE_NAME, null, values);
 	            break;
 	        default:
@@ -112,7 +114,7 @@ public class Group extends Base {
 	    int uriType = sURIMatcher.match(uri);
 	    int rowsUpdated = 0;
 	    switch (uriType) {
-	        case GROUP:
+	        case GROUP_CODE:
 	            rowsUpdated = db.update(TABLE_NAME, values, selection, selectionArgs);
 	            break;
 	        default:
@@ -131,11 +133,11 @@ public class Group extends Base {
 	    String query;
 	    
 	    switch(uriType) {
-	    case ALL:
+	    case ALL_CODE:
 	    	query = "SELECT _id, group_name from tbl_group";
 	    	cursor = db.rawQuery(query, null);
 	        break;
-	    case PLAYERS:
+	    case PLAYERS_CODE:
 	    	query = "" + 
 		    	"SELECT tbl_player._id, tbl_player.fname, tbl_player.lname, tbl_group._id as group_id "  +  
 				"FROM tbl_player " +
@@ -144,6 +146,17 @@ public class Group extends Base {
 				"ORDER BY group_name DESC";
 	    	cursor = db.rawQuery(query, null);
 	        break;
+	    case GROUP_CODE:
+	    	query = "" + 
+		    	"SELECT tbl_player._id, tbl_player.fname, tbl_player.lname, tbl_player.number, " +
+				       "tbl_group._id as group_id, tbl_group.group_name "  +  
+				"FROM tbl_player " +
+				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id " +
+				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
+				"WHERE group_id = ? " +
+				"ORDER BY group_name DESC";
+	    	cursor = db.rawQuery(query, uri.getLastPathSegment().split(" ", 1));
+	        break;
 	    default:
 	        throw new IllegalArgumentException("Unknown URI");
 	    }
@@ -151,7 +164,6 @@ public class Group extends Base {
     	cursor.setNotificationUri(
     			getContext().getContentResolver(), Group.CONTENT_URI);
 //    			this.getContentResolver(), Uri.withAppendedPath(Group.CONTENT_URI, Group.ALL_URI));
-    	Log.i("query called", "mofo");
     	
 	    return cursor;
 	}
