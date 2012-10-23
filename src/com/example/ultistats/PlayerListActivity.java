@@ -64,6 +64,7 @@ public class PlayerListActivity extends FragmentActivity implements LoaderCallba
 
         playerListView = (ListView) findViewById(android.R.id.list);
         playerListView.setAdapter(adapter);
+        playerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
     
     public void bindPlayerClick() {
