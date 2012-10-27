@@ -38,12 +38,21 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         Intent intent = getIntent();
         setContentView(R.layout.group_edit);
         
+        groupNameEditText = (EditText) findViewById(R.id.edit_group_name);
+        
         groupId = intent.getStringExtra(GroupListActivity.GROUP_ID);
         if (groupId == null)
         	return;
         
         Bundle bundle = new Bundle();
         bundle.putString("groupId", groupId);
+        
+        Cursor cursor = getContentResolver().query(
+	        Uri.withAppendedPath(Group.CONTENT_URI, groupId), null, null, null, null);
+        
+        cursor.moveToFirst();
+        String groupName = cursor.getString(cursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
+        groupNameEditText.setText(groupName);
         
         getSupportLoaderManager().initLoader(Group.GROUP_CODE, bundle, this);
         setupAdapter();
@@ -52,7 +61,6 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     //PUT THE RIGHT VIEWS IN HERE
     public void setupAdapter() {
         //The columns that should be bound to the UI
-    	//don't hardcode this
         String[] columns = new String[] { Player.FIRST_NAME_COLUMN, Player.LAST_NAME_COLUMN, Player.NUMBER_COLUMN };
         //The textviews that will display the data
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
@@ -90,7 +98,6 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     public void saveGroup(MenuItem item) {
     	ContentValues groupValues = new ContentValues();
     	
-        groupNameEditText = (EditText) findViewById(R.id.edit_group_name);
     	String groupName = groupNameEditText.getText().toString();
     	
     	if (groupName.length() == 0) {
