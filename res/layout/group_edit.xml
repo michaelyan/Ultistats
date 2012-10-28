@@ -2,19 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
+    android:orientation="vertical" >
+    
     <EditText
         android:id="@+id/edit_group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:hint="@string/group_edit_group_name_hint"
         android:singleLine="true" />
     
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+    
    	<ListView
-		android:id="@android:id/android:list"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
+		android:id="@+id/current_players"
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:layout_gravity="left"
+	    android:layout_height="wrap_content" />
    	
+   	<ListView
+		android:id="@+id/other_players"
+		android:layout_width="0dp"
+		android:layout_weight="1"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
 </LinearLayout>

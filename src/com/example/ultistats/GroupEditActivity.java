@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -29,8 +31,10 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 	
 	private String groupId;
 	private EditText groupNameEditText;
-	private ListView playerListView;
-    private SimpleCursorAdapter adapter;
+	private ListView currentPlayerListView;
+	private ListView otherPlayerListView;
+    private SimpleCursorAdapter groupAdapter;
+    private SimpleCursorAdapter groupExclusiveAdapter;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,10 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         groupNameEditText.setText(groupName);
         
         getSupportLoaderManager().initLoader(Group.GROUP_CODE, bundle, this);
+        getSupportLoaderManager().initLoader(Group.GROUP_EXCLUSIVE_CODE, bundle, this);
+        
         setupAdapter();
+        bindClicks();
     }
     
     //PUT THE RIGHT VIEWS IN HERE
@@ -66,11 +73,31 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
         
         // create the adapter using the cursor pointing to the desired data as well as the layout information
-        adapter = new SimpleCursorAdapter(
+        groupAdapter = new SimpleCursorAdapter(
+	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
+        
+        groupExclusiveAdapter = new SimpleCursorAdapter(
 	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
 
-        playerListView = (ListView) findViewById(android.R.id.list);
-        playerListView.setAdapter(adapter);
+        currentPlayerListView = (ListView) findViewById(R.id.current_players);
+        currentPlayerListView.setAdapter(groupAdapter);
+        
+        otherPlayerListView = (ListView) findViewById(R.id.other_players);
+        otherPlayerListView.setAdapter(groupExclusiveAdapter);
+    }
+    /**************************************************************************
+     * Click Actions **********************************************************
+     **************************************************************************/
+    public void bindClicks() {
+	    currentPlayerListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				//Make view disappear
+				v.setVisibility(View.GONE);
+				
+		    }     
+	    });
     }
     
     /**************************************************************************
@@ -85,7 +112,6 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.group_save:
             	saveGroup(item);
@@ -130,22 +156,38 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     /**************************************************************************
      * Loader Functions *******************************************************
      **************************************************************************/
-    
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
     	String groupId = bundle.getString("groupId");
-        CursorLoader cursorLoader = new CursorLoader(getApplicationContext(),
-	        Uri.withAppendedPath(Group.CONTENT_URI, groupId), null, null, null, null);
+        CursorLoader cursorLoader;
+        switch (id) {
+            case Group.GROUP_CODE:
+                cursorLoader = new CursorLoader(getApplicationContext(),
+			        Uri.withAppendedPath(Group.GROUP_URI, groupId), null, null, null, null);
+                break;
+            case Group.GROUP_EXCLUSIVE_CODE:
+                cursorLoader = new CursorLoader(getApplicationContext(),
+			        Uri.withAppendedPath(Group.GROUP_EXCLUSIVE_URI, groupId), null, null, null, null);
+                break;
+            default:
+                cursorLoader = null;
+                break;
+        }
         return cursorLoader;
     }
     
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
-    	adapter.swapCursor(cursor);
+    	//if ready
+        if (loader.getId() == Group.GROUP_CODE) 
+        	groupAdapter.swapCursor(cursor);
+        else if (loader.getId() == Group.GROUP_EXCLUSIVE_CODE) 
+        	groupExclusiveAdapter.swapCursor(cursor);
     }
     
     @Override
     public void onLoaderReset(Loader <Cursor> loader) {
-        adapter.swapCursor(null);
+    	groupAdapter.swapCursor(null);
+    	groupExclusiveAdapter.swapCursor(null);
     }
 }

@@ -20,18 +20,23 @@ public class Group extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + GROUP_BASE_PATH);
 	
+	public static final String NUMBER = "/#";
 	public static final String ALL = "/all";
 	public static final String PLAYERS = "/players";
-	public static final String GROUP = "/#";
+	public static final String GROUP = "";
+	public static final String GROUP_EXCLUSIVE = "/group_exclusive";
 	public static final String NEW = "/new";
 	
 	public static final int ALL_CODE = 1;
 	public static final int PLAYERS_CODE = 2;
 	public static final int GROUP_CODE = 3;
-	public static final int NEW_CODE = 4;
+	public static final int GROUP_EXCLUSIVE_CODE = 4;
+	public static final int NEW_CODE = 5;
 	
 	public static final Uri ALL_URI = Uri.withAppendedPath(Group.CONTENT_URI, ALL);
 	public static final Uri PLAYERS_URI = Uri.withAppendedPath(Group.CONTENT_URI, PLAYERS);
+	public static final Uri GROUP_URI = Group.CONTENT_URI;
+	public static final Uri GROUP_EXCLUSIVE_URI = Uri.withAppendedPath(Group.CONTENT_URI, GROUP_EXCLUSIVE);
 	public static final Uri NEW_URI = Uri.withAppendedPath(Group.CONTENT_URI, NEW);
 	
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -39,7 +44,8 @@ public class Group extends Base {
 	static {
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + ALL, ALL_CODE); //Get all the groups (without players)
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + PLAYERS, PLAYERS_CODE); //Get all the players and their group info
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + "/#", GROUP_CODE); //Get a single group and all its players
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NUMBER, GROUP_CODE); //Get a single group and all its players
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + (GROUP_EXCLUSIVE + NUMBER), GROUP_EXCLUSIVE_CODE); //Get a single group and all its players
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NEW, NEW_CODE); //New group
 	}
 	
@@ -81,9 +87,19 @@ public class Group extends Base {
 	}
 	
 	@Override
-	public int delete(Uri arg0, String arg1, String[] arg2) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete (Uri uri, String selection, String[] selectionArgs) {
+	    int uriType = sURIMatcher.match(uri);
+	    int rowsUpdated = 0;
+	    switch (uriType) {
+	        case GROUP_CODE:
+	            rowsUpdated = db.delete(TABLE_NAME, selection, selectionArgs);
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Unknown URI: " + uri);
+	    }
+	    
+	    getContext().getContentResolver().notifyChange(Group.CONTENT_URI, null);
+	    return rowsUpdated;
 	}
 
 	@Override
@@ -157,6 +173,20 @@ public class Group extends Base {
 				"ORDER BY group_name DESC";
 	    	cursor = db.rawQuery(query, uri.getLastPathSegment().split(" ", 1));
 	        break;
+	    case GROUP_EXCLUSIVE_CODE:
+	    	query = "" + 
+		    	"SELECT tbl_player._id, tbl_player.fname, tbl_player.lname, tbl_player.number " +
+	    		"FROM tbl_player " +
+		    	"WHERE tbl_player._id NOT IN " +
+		    	"(" +
+			    	"SELECT tbl_player._id " +
+					"FROM tbl_player " +
+					"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id " +
+					"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
+					"WHERE group_id = ? " +
+				")";
+	    	cursor = db.rawQuery(query, uri.getLastPathSegment().split(" ", 1));
+	    	break;
 	    default:
 	        throw new IllegalArgumentException("Unknown URI");
 	    }
