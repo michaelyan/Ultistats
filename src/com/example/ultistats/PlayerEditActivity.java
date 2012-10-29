@@ -31,7 +31,7 @@ public class PlayerEditActivity extends FragmentActivity {
         Intent intent = getIntent();
         setContentView(R.layout.player_edit);
         
-        playerId = intent.getStringExtra(PlayerListActivity.PLAYER_ID);
+        playerId = intent.getStringExtra(PlayerActivity.PLAYER_ID);
         fnameEditText = (EditText) findViewById(R.id.edit_fname);
         lnameEditText = (EditText) findViewById(R.id.edit_lname);
         numberEditText = (EditText) findViewById(R.id.edit_number);

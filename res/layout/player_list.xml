@@ -11,7 +11,7 @@
 	    android:onClick="displayGroups" />
     
 	<ListView
-		android:id="@android:id/android:list"
+		android:id="@+id/player_list"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
 </LinearLayout>

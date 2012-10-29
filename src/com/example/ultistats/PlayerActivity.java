@@ -13,11 +13,13 @@ import android.util.Log;
 import android.widget.TextView;
 
 public class PlayerActivity extends FragmentActivity {
+	public static final String PLAYER_ID = "intent_player_id";
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String playerID = intent.getStringExtra(PlayerListActivity.PLAYER_ID);
+        String playerID = intent.getStringExtra(PLAYER_ID);
         setContentView(R.layout.player_list_entry);
         
         Cursor cursor = getContentResolver().query(

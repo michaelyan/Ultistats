@@ -49,7 +49,7 @@
                 android:value="com.example.ultistats.HomeActivity" />
         </activity>
         <activity
-            android:name=".PlayerListActivity"
+            android:name=".PlayerGroupActivity"
             android:label="@string/title_activity_view_player_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
