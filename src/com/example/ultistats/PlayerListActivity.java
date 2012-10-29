@@ -53,9 +53,8 @@ public class PlayerListActivity extends FragmentActivity implements LoaderCallba
     
     public void setupAdapter() {
         //The columns that should be bound to the UI
-    	//don't hardcode this
         String[] columns = new String[] { Player.FIRST_NAME_COLUMN, Player.LAST_NAME_COLUMN, Player.NUMBER_COLUMN };
-        //The textviews that will display the data
+        //The TextViews that will display the data
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
         
         // create the adapter using the cursor pointing to the desired data as well as the layout information
@@ -67,6 +66,9 @@ public class PlayerListActivity extends FragmentActivity implements LoaderCallba
         playerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
     
+    /**************************************************************************
+     * Click Actions **********************************************************
+     **************************************************************************/
     public void bindPlayerClick() {
         playerListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

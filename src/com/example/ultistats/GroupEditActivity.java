@@ -52,7 +52,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         bundle.putString("groupId", groupId);
         
         Cursor cursor = getContentResolver().query(
-	        Uri.withAppendedPath(Group.CONTENT_URI, groupId), null, null, null, null);
+	        Uri.withAppendedPath(Group.GROUP_NAME_URI, groupId), null, null, null, null);
         
         cursor.moveToFirst();
         String groupName = cursor.getString(cursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
@@ -62,10 +62,9 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         getSupportLoaderManager().initLoader(Group.GROUP_EXCLUSIVE_CODE, bundle, this);
         
         setupAdapter();
-        bindClicks();
+        bindPlayerClick();
     }
     
-    //PUT THE RIGHT VIEWS IN HERE
     public void setupAdapter() {
         //The columns that should be bound to the UI
         String[] columns = new String[] { Player.FIRST_NAME_COLUMN, Player.LAST_NAME_COLUMN, Player.NUMBER_COLUMN };
@@ -85,17 +84,27 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         otherPlayerListView = (ListView) findViewById(R.id.other_players);
         otherPlayerListView.setAdapter(groupExclusiveAdapter);
     }
+    
     /**************************************************************************
      * Click Actions **********************************************************
      **************************************************************************/
-    public void bindClicks() {
+    public void bindPlayerClick() {
 	    currentPlayerListView.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				//Make view disappear
-				v.setVisibility(View.GONE);
-				
+				int deleted = getContentResolver().delete(
+			        Group.DELETE_PLAYER_FROM_GROUP_URI, "player_id=? AND group_id=?", new String[]{String.valueOf(id), groupId});
+		    }     
+	    });
+	    
+	    otherPlayerListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		    	ContentValues newPlayerGroupValues = new ContentValues();
+				newPlayerGroupValues.put(Group.GROUP_ID_COLUMN, groupId); 
+				newPlayerGroupValues.put(Player.PLAYER_ID_COLUMN, String.valueOf(id)); 
+				getContentResolver().insert(
+			        Group.INSERT_PLAYER_INTO_GROUP_URI, newPlayerGroupValues);
 		    }     
 	    });
     }
@@ -103,9 +112,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     /**************************************************************************
      * Menu Actions ***********************************************************
      **************************************************************************/
-    
     public boolean onCreateOptionsMenu(Menu menu) {
-    	Log.i("menu", "created");
         getMenuInflater().inflate(R.menu.group_edit_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }

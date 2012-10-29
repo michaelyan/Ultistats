@@ -39,6 +39,7 @@ public class Player extends Base {
 	}
 	
 	private static final String TABLE_NAME = "tbl_player";
+	public static final String PLAYER_ID_COLUMN = "player_id";
 	public static final String FIRST_NAME_COLUMN = "fname";
 	public static final String LAST_NAME_COLUMN = "lname";
 	public static final String NUMBER_COLUMN = "number";
