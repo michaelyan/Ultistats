@@ -79,8 +79,8 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     
     public void onDestroy() {
     	//They were in the middle of making a group and exited, so remove the entries from the database
+    	super.onDestroy();
     	if (newGroupFlag) {
-	    	super.onDestroy();
 			int deleted = getContentResolver().delete(
 		        Group.DELETE_GROUP_URI, null, new String[]{groupId});
     	}
