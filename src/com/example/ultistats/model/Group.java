@@ -27,8 +27,9 @@ public class Group extends Base {
 	public static final String GROUP_NAME = "/group_name";
 	public static final String GROUP_EXCLUSIVE = "/group_exclusive";
 	public static final String NEW = "/new";
-	public static final String DELETE_PLAYER_FROM_GROUP = "/delete_from_group";
-	public static final String INSERT_PLAYER_INTO_GROUP = "/insert_into_group";
+	public static final String DELETE_GROUP = "/delete_group";
+	public static final String DELETE_PLAYER_FROM_GROUP = "/delete_player_from_group";
+	public static final String INSERT_PLAYER_INTO_GROUP = "/insert_player_into_group";
 	
 	public static final int ALL_CODE = 1;
 	public static final int PLAYERS_CODE = 2;
@@ -36,8 +37,9 @@ public class Group extends Base {
 	public static final int GROUP_NAME_CODE = 4;
 	public static final int GROUP_EXCLUSIVE_CODE = 5;
 	public static final int NEW_CODE = 6;
-	public static final int DELETE_PLAYER_FROM_GROUP_CODE = 7;
+	public static final int DELETE_GROUP_CODE = 7;
 	public static final int INSERT_PLAYER_INTO_GROUP_CODE = 8;
+	public static final int DELETE_PLAYER_FROM_GROUP_CODE = 9;
 	
 	public static final Uri ALL_URI = Uri.withAppendedPath(Group.CONTENT_URI, ALL);
 	public static final Uri PLAYERS_URI = Uri.withAppendedPath(Group.CONTENT_URI, PLAYERS);
@@ -45,6 +47,7 @@ public class Group extends Base {
 	public static final Uri GROUP_NAME_URI = Uri.withAppendedPath(Group.CONTENT_URI, GROUP_NAME);
 	public static final Uri GROUP_EXCLUSIVE_URI = Uri.withAppendedPath(Group.CONTENT_URI, GROUP_EXCLUSIVE);
 	public static final Uri NEW_URI = Uri.withAppendedPath(Group.CONTENT_URI, NEW);
+	public static final Uri DELETE_GROUP_URI = Uri.withAppendedPath(Group.CONTENT_URI, DELETE_GROUP);
 	public static final Uri DELETE_PLAYER_FROM_GROUP_URI = Uri.withAppendedPath(Group.CONTENT_URI, DELETE_PLAYER_FROM_GROUP);
 	public static final Uri INSERT_PLAYER_INTO_GROUP_URI = Uri.withAppendedPath(Group.CONTENT_URI, INSERT_PLAYER_INTO_GROUP);
 	
@@ -57,6 +60,7 @@ public class Group extends Base {
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + GROUP_NAME + NUMBER, GROUP_NAME_CODE); //Get a single group, but just it's name
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + GROUP_EXCLUSIVE + NUMBER, GROUP_EXCLUSIVE_CODE); //Get a single group and all its players
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NEW, NEW_CODE); //New group
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + DELETE_GROUP, DELETE_GROUP_CODE); //Remove a group and all its associated players
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + DELETE_PLAYER_FROM_GROUP, DELETE_PLAYER_FROM_GROUP_CODE); //Remove a player from a group
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + INSERT_PLAYER_INTO_GROUP, INSERT_PLAYER_INTO_GROUP_CODE); //Remove a player from a group
 	}
@@ -112,17 +116,16 @@ public class Group extends Base {
 	    long id = 0;
 	    switch (uriType) {
 	        case NEW_CODE:
-	            id = db.insert(TABLE_NAME, null, values);
+	        	String nullColumnHack = "group_name";
+	            id = db.insert(TABLE_NAME, nullColumnHack, values);
 	            break;
 	        case INSERT_PLAYER_INTO_GROUP_CODE:
 	            id = db.insert(JOIN_TABLE_NAME, null, values);
-	            Log.i("The id of the row is", String.valueOf(id));
 	            break;
 	        default:
 	            throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
-	    Uri insertUri = ContentUris.withAppendedId(Group.CONTENT_URI, id);
-	    getContext().getContentResolver().notifyChange(insertUri, null);
+	    
 	    getContext().getContentResolver().notifyChange(Group.CONTENT_URI, null);
 	    
 	    return Uri.withAppendedPath(Group.CONTENT_URI, String.valueOf(id));
@@ -148,8 +151,20 @@ public class Group extends Base {
 	public int delete (Uri uri, String selection, String[] selectionArgs) {
 	    int uriType = sURIMatcher.match(uri);
 	    int rowsUpdated = 0;
+	    String query;
 	    switch (uriType) {
+		    case DELETE_GROUP_CODE:
+		    	query = "" +
+		    		"DELETE FROM tbl_group " +
+		    		"WHERE tbl_group._id = ?";
+		    	db.execSQL(query, selectionArgs);
+		    	query = "" +
+		    		"DELETE FROM tbl_player_group " +
+		    		"WHERE tbl_player_group.group_id = ?";
+		    	db.execSQL(query, selectionArgs);
+		    	break;
 	        case DELETE_PLAYER_FROM_GROUP_CODE:
+	        	selection = "player_id=? AND group_id=?";
 	            rowsUpdated = db.delete(JOIN_TABLE_NAME, selection, selectionArgs);
 	            break;
 	        default:

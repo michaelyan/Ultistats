@@ -12,8 +12,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.app.LoaderManager;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -29,12 +27,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class PlayerListFragment extends Fragment implements LoaderCallbacks<Cursor> {
- //When you click on a player, this is the key of the value you are storing in the intent
+	
     private ListView playerListView;
     private SimpleCursorAdapter adapter;
     
@@ -42,14 +41,8 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLoaderManager().initLoader(Player.ALL_CODE, null, this);
-        
-        //Copy the database to the phone
-//        Base b = new Base(this);
-//        b.copyDatabase();
-        
+    	setHasOptionsMenu(true);
         setupAdapter();
-//	    bindPlayerClick();
-//	    bindPlayerLongClick();
 	}
     
     public void setupAdapter() {
@@ -57,15 +50,13 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
         //The TextViews that will display the data
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
         
-        // create the adapter using the cursor pointing to the desired data as well as the layout information
         adapter = new SimpleCursorAdapter(
 	        getActivity().getApplicationContext(), R.layout.player_list_entry, null, columns, to, 0); //what flags?
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-    	
+    		Bundle savedInstanceState) {
         return inflater.inflate(R.layout.player_group_list, container, false);
     } 
     
@@ -75,9 +66,14 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
         
         playerListView = (ListView) getView().findViewById(R.id.player_list);
         playerListView.setAdapter(adapter);
-        playerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        
+	    bindPlayerClick();
+	    bindPlayerLongClick();
     }
     
+    /**************************************************************************
+     * Event Handlers *********************************************************
+     **************************************************************************/
     public void bindPlayerClick() {
         playerListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -97,10 +93,10 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
                 if (actionMode != null)
                 	return false;
 
-//                String playerId = String.valueOf(id);
-//                actionMode = PlayerGroupActivity.this.startActionMode(actionModeCallback);
-//                actionMode.setTag(playerId);
-//                view.setSelected(true);
+                String playerId = String.valueOf(id);
+                actionMode = getActivity().startActionMode(actionModeCallback);
+                actionMode.setTag(playerId);
+                view.setSelected(true);
                 return true;
             }
 
@@ -137,6 +133,30 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
 		        }
 		    };
         });
+    }
+
+    /**************************************************************************
+     * Menu Actions ***********************************************************
+     **************************************************************************/
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.player_list_menu, menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_player:
+            	newPlayer(item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    public void newPlayer(MenuItem item) {
+    	Intent intent = new Intent(getActivity(), PlayerEditActivity.class);
+    	startActivity(intent);
     }
 
     /**************************************************************************

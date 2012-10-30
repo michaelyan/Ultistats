@@ -29,12 +29,18 @@ import android.view.View.OnFocusChangeListener;
 
 public class GroupEditActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
 	
+	public static final String GROUP_ID = "intent_group_id";
+	
 	private String groupId;
+	private Cursor cursor;
 	private EditText groupNameEditText;
 	private ListView currentPlayerListView;
 	private ListView otherPlayerListView;
     private SimpleCursorAdapter groupAdapter;
     private SimpleCursorAdapter groupExclusiveAdapter;
+    
+    //Whether it is a new group being created
+    private boolean newGroupFlag = false;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,25 +50,44 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         
         groupNameEditText = (EditText) findViewById(R.id.edit_group_name);
         
-        groupId = intent.getStringExtra(GroupListActivity.GROUP_ID);
-        if (groupId == null)
-        	return;
-        
         Bundle bundle = new Bundle();
-        bundle.putString("groupId", groupId);
         
-        Cursor cursor = getContentResolver().query(
-	        Uri.withAppendedPath(Group.GROUP_NAME_URI, groupId), null, null, null, null);
-        
-        cursor.moveToFirst();
-        String groupName = cursor.getString(cursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
-        groupNameEditText.setText(groupName);
+        groupId = intent.getStringExtra(GROUP_ID);
+        if (groupId != null) {
+	        bundle.putString("groupId", groupId);
+	        
+	        cursor = getContentResolver().query(
+		        Uri.withAppendedPath(Group.GROUP_NAME_URI, groupId), null, null, null, null);
+	        
+	        cursor.moveToFirst();
+	        String groupName = cursor.getString(cursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
+	        groupNameEditText.setText(groupName);
+        }
+        else {
+        	newGroupFlag = true;
+	        Uri insertedUri = getContentResolver().insert(Group.NEW_URI, null);
+	        groupId = insertedUri.getLastPathSegment();
+	        bundle.putString("groupId", groupId);
+        }
         
         getSupportLoaderManager().initLoader(Group.GROUP_CODE, bundle, this);
         getSupportLoaderManager().initLoader(Group.GROUP_EXCLUSIVE_CODE, bundle, this);
         
         setupAdapter();
         bindPlayerClick();
+    }
+    
+    public void onDestroy() {
+    	//They were in the middle of making a group and exited, so remove the entries from the database
+    	if (newGroupFlag) {
+	    	super.onDestroy();
+			int deleted = getContentResolver().delete(
+		        Group.DELETE_GROUP_URI, null, new String[]{groupId});
+    	}
+    }
+    
+    public void setupGroupName() {
+    	
     }
     
     public void setupAdapter() {
@@ -93,13 +118,14 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				int deleted = getContentResolver().delete(
-			        Group.DELETE_PLAYER_FROM_GROUP_URI, "player_id=? AND group_id=?", new String[]{String.valueOf(id), groupId});
+			        Group.DELETE_PLAYER_FROM_GROUP_URI, null, new String[]{String.valueOf(id), groupId});
 		    }     
 	    });
 	    
 	    otherPlayerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+    	Log.i("player clicked", "wtf");
 		    	ContentValues newPlayerGroupValues = new ContentValues();
 				newPlayerGroupValues.put(Group.GROUP_ID_COLUMN, groupId); 
 				newPlayerGroupValues.put(Player.PLAYER_ID_COLUMN, String.valueOf(id)); 
@@ -146,19 +172,16 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     	
 		groupValues.put(Group.GROUP_NAME_COLUMN, groupName); 
 
-    	if (groupId == null)
-	    	getContentResolver().insert(Group.NEW_URI, groupValues);
-    	else {
-	    	String selectionClause = "_id = ?";
-	    	String[] selectionArgs = {groupId};
-	    	getContentResolver().update(
-	    		Uri.withAppendedPath(Group.CONTENT_URI, groupId), groupValues, selectionClause, selectionArgs 
-	    	); 
-    	}
+    	String selectionClause = "_id = ?";
+    	String[] selectionArgs = {groupId};
+    	getContentResolver().update(
+    		Uri.withAppendedPath(Group.CONTENT_URI, groupId), groupValues, selectionClause, selectionArgs 
+    	); 
     	
+    	//When saving a group, don't call onDestroy()
+    	newGroupFlag = false;
     	finish();
     }
-    
 
     /**************************************************************************
      * Loader Functions *******************************************************

@@ -1,5 +1,7 @@
 package com.example.ultistats;
 
+import com.example.ultistats.model.Base;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -19,54 +21,26 @@ public class PlayerGroupActivity extends FragmentActivity {
 	    // Notice that setContentView() is not used, because we use the root
 	    // android.R.id.content as the container for each fragment
 
+	    Base base = new Base(this);
+	    base.copyDatabase();
+	    
 	    // setup action bar for tabs
 	    ActionBar actionBar = getActionBar();
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 	    actionBar.setDisplayShowTitleEnabled(false);
 
 	    Tab tab = actionBar.newTab()
-	            .setText("Players")
+	            .setText("Players") //Replace with strings.xml
 	            .setTabListener(new PlayerGroupTabListener<PlayerListFragment>(
 	                    this, "artist", PlayerListFragment.class));
 	    actionBar.addTab(tab);
 //
-//	    tab = actionBar.newTab()
-//	        .setText(R.string.album)
-//	        .setTabListener(new PlayerGroupTabListener<AlbumFragment>(
-//	                this, "album", AlbumFragment.class));
-//	    actionBar.addTab(tab);
+	    tab = actionBar.newTab()
+	        .setText("Groups")
+	        .setTabListener(new PlayerGroupTabListener<GroupListFragment>(
+	                this, "album", GroupListFragment.class));
+	    actionBar.addTab(tab);
 	}
-    
-    /**************************************************************************
-     * Menu Actions ***********************************************************
-     **************************************************************************/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.player_list_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_player:
-            	newPlayer(item);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    
-    public void newPlayer(MenuItem item) {
-    	Intent intent = new Intent(this, PlayerEditActivity.class);
-    	startActivity(intent);
-    }
-
-    public void displayGroups(View view) {
-    	Intent intent = new Intent(this, GroupListActivity.class);
-    	startActivity(intent);
-    }
-    
     
     /**************************************************************************
      * Tab Listener Class *****************************************************
@@ -76,12 +50,7 @@ public class PlayerGroupActivity extends FragmentActivity {
         private final Activity mActivity;
         private final String mTag;
         private final Class<T> mClass;
-
-        /** Constructor used each time a new tab is created.
-          * @param activity  The host Activity, used to instantiate the fragment
-          * @param tag  The identifier tag for the fragment
-          * @param clz  The fragment's Class, used to instantiate the fragment
-          */
+        
         public PlayerGroupTabListener(Activity activity, String tag, Class<T> clz) {
             mActivity = activity;
             mTag = tag;
