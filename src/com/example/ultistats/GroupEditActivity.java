@@ -76,9 +76,9 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         Intent intent = getIntent();
         String intentGroupId = intent.getStringExtra(Group.GROUP_ID_COLUMN);
 
-        if (intentGroupId != null)
+        if (intentGroupId != null) {
             return intentGroupId;
-        else {
+        } else {
             mNewGroupFlag = true;
             Uri insertedUri = getContentResolver().insert(Group.NEW_URI, null);
             String mNewGroupId = insertedUri.getLastPathSegment();
@@ -201,7 +201,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
      **************************************************************************/
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-    	String mGroupId = bundle.getString("mGroupId");
+    	String mGroupId = bundle.getString(Group.GROUP_ID_COLUMN);
         CursorLoader cursorLoader;
         switch (id) {
             case Group.GROUP_CODE:

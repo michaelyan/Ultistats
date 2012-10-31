@@ -42,6 +42,7 @@ public class Player extends Base {
 	public static final String PLAYER_ID_COLUMN = "player_id";
 	public static final String FIRST_NAME_COLUMN = "fname";
 	public static final String LAST_NAME_COLUMN = "lname";
+    public static final String NICKNAME_COLUMN = "nickname";
 	public static final String NUMBER_COLUMN = "number";
 	
 	
@@ -50,42 +51,30 @@ public class Player extends Base {
 		private int _id;
 		private String fname;
 		private String lname;
-		
-		public PlayerRow() {}
-		
-		public PlayerRow(int _id, String fname, String lname) {
+        private String nickname;
+        private int number;
+
+		public PlayerRow(int _id, String fname, String lname, String nickname, int number) {
 			this._id = _id;
 			this.fname = fname;
 			this.lname = lname;
+            this.nickname = nickname;
+            this.number = number;
 		}
 
-		public int getId() {
-			return _id;
-		}
+		public int getId() { return _id; }
 
-		public String getFname() {
-			return fname;
-		}
+		public String getFname() { return fname; }
 
-		public String getLname() {
-			return lname;
-		}
+		public String getLname() { return lname; }
 		
-		public void setId(int _id) {
-			this._id = _id;
-		}
+		public void setId(int _id) { this._id = _id; }
 
-		public void setFname(String fname) {
-			this.fname = fname;
-		}
+		public void setFname(String fname) { this.fname = fname; }
 
-		public void setLname(String lname) {
-			this.lname = lname;
-		}
+		public void setLname(String lname) { this.lname = lname; }
 
-		public String toString() {
-			return '(' + this.fname + ',' + this.lname + ')';
-		}
+		public String toString() { return '(' + this.fname + ',' + this.lname + ')'; }
 	}
 
 	@Override
@@ -94,9 +83,6 @@ public class Player extends Base {
 		return true;
 	}
 	
-	private static final String columns = "fname, lname";
-	
-	@Override
 	public int delete(Uri arg0, String arg1, String[] arg2) {
 		// TODO Auto-generated method stub
 		return 0;

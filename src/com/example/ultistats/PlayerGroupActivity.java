@@ -32,13 +32,13 @@ public class PlayerGroupActivity extends FragmentActivity {
 	    Tab tab = actionBar.newTab()
 	            .setText("Players") //Replace with strings.xml
 	            .setTabListener(new PlayerGroupTabListener<PlayerListFragment>(
-	                    this, "artist", PlayerListFragment.class));
+	                    this, PlayerListFragment.class));
 	    actionBar.addTab(tab);
 
 	    tab = actionBar.newTab()
 	        .setText("Groups")
 	        .setTabListener(new PlayerGroupTabListener<GroupListFragment>(
-	                this, "album", GroupListFragment.class));
+	                this, GroupListFragment.class));
 	    actionBar.addTab(tab);
 	}
     
@@ -48,12 +48,10 @@ public class PlayerGroupActivity extends FragmentActivity {
     private class PlayerGroupTabListener<T extends Fragment> implements ActionBar.TabListener {
         private Fragment fragment;
         private final Activity activity;
-        private final String tag;
         private final Class<T> clz;
         
-        public PlayerGroupTabListener(Activity activity, String tag, Class<T> clz) {
+        public PlayerGroupTabListener(Activity activity, Class<T> clz) {
             this.activity = activity;
-            this.tag = tag;
             this.clz = clz;
         }
 
@@ -63,7 +61,7 @@ public class PlayerGroupActivity extends FragmentActivity {
             if (fragment == null) {
                 // If not, instantiate and add it to the activity
                 fragment = Fragment.instantiate(activity, clz.getName());
-                ft.add(android.R.id.content, fragment, tag);
+                ft.add(android.R.id.content, fragment);
             } else {
                 // If it exists, simply attach it in order to show it
                 ft.attach(fragment);

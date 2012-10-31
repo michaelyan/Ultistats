@@ -23,7 +23,7 @@ public class PlayerViewActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         mPlayerId = intent.getStringExtra(Player.PLAYER_ID_COLUMN);
-        setContentView(R.layout.player_list_entry);
+        setContentView(R.layout.player_entry);
         
         Cursor cursor = getContentResolver().query(
 	        Uri.withAppendedPath(Player.CONTENT_URI, mPlayerId), null, null, null, null);
@@ -36,7 +36,11 @@ public class PlayerViewActivity extends FragmentActivity {
         String lname = cursor.getString(cursor.getColumnIndex("lname"));
         TextView lnameTextView = (TextView) findViewById(R.id.lname);
         lnameTextView.setText(lname);
-        
+
+        String nickname = cursor.getString(cursor.getColumnIndex("nickname"));
+        TextView nicknameTextView = (TextView) findViewById(R.id.nickname);
+        nicknameTextView.setText(nickname);
+
         String number = cursor.getString(cursor.getColumnIndex("number"));
         TextView numberTextView = (TextView) findViewById(R.id.number);
         numberTextView.setText(number);

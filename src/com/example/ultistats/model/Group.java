@@ -189,7 +189,7 @@ public class Group extends Base {
 	        break;
 	    case PLAYERS_CODE:
 	    	query = "" + 
-		    	"SELECT tbl_player._id, tbl_player.fname, tbl_player.lname, tbl_group._id as group_id "  +  
+		    	"SELECT tbl_player.*, tbl_group._id as group_id "  +
 				"FROM tbl_player " +
 				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id " +
 				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
@@ -198,8 +198,7 @@ public class Group extends Base {
 	        break;
 	    case GROUP_CODE:
 	    	query = "" + 
-		    	"SELECT tbl_player._id, tbl_player.fname, tbl_player.lname, tbl_player.number, " +
-				       "tbl_group._id as group_id, tbl_group.group_name "  +  
+		    	"SELECT tbl_player.*, tbl_group._id as group_id, tbl_group.group_name "  +
 				"FROM tbl_player " +
 				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id " +
 				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
