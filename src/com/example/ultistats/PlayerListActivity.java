@@ -31,10 +31,8 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class PlayerListActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
- //When you click on a player, this is the key of the value you are storing in the intent
-	public static final String PLAYER_ID = "intent_player_id";
-    private ListView playerListView;
-    private SimpleCursorAdapter adapter;
+    private ListView mPlayerListView;
+    private SimpleCursorAdapter mAdapter;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,34 +55,34 @@ public class PlayerListActivity extends FragmentActivity implements LoaderCallba
         //The TextViews that will display the data
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
         
-        // create the adapter using the cursor pointing to the desired data as well as the layout information
-        adapter = new SimpleCursorAdapter(
+        // create the mAdapter using the cursor pointing to the desired data as well as the layout information
+        mAdapter = new SimpleCursorAdapter(
 	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
 
-        playerListView = (ListView) findViewById(android.R.id.list);
-        playerListView.setAdapter(adapter);
-        playerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        mPlayerListView = (ListView) findViewById(android.R.id.list);
+        mPlayerListView.setAdapter(mAdapter);
+        mPlayerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
     
     /**************************************************************************
      * Click Actions **********************************************************
      **************************************************************************/
     public void bindPlayerClick() {
-        playerListView.setOnItemClickListener(new OnItemClickListener() {
+        mPlayerListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), PlayerViewActivity.class);
-                intent.putExtra(PLAYER_ID, String.valueOf(id));
+                intent.putExtra(Player.PLAYER_ID_COLUMN, String.valueOf(id));
                 startActivity(intent);
             }
         });
     }
     
     public void bindPlayerLongClick() {
-        playerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        mPlayerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 		    private ActionMode actionMode;
 		    
         	@Override
-            public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> mAdapter, View view, int position, long id) {
                 if (actionMode != null)
                 	return false;
 
@@ -113,7 +111,7 @@ public class PlayerListActivity extends FragmentActivity implements LoaderCallba
 		            switch (item.getItemId()) {
 		                case R.id.player_edit:
 		                    Intent intent = new Intent(getApplicationContext(), PlayerEditActivity.class);
-		                    intent.putExtra(PLAYER_ID, (String) mode.getTag());
+		                    intent.putExtra(Player.PLAYER_ID_COLUMN, (String) mode.getTag());
 		                    startActivity(intent);
 		                    mode.finish();
 		                    return true;
@@ -172,11 +170,11 @@ public class PlayerListActivity extends FragmentActivity implements LoaderCallba
     
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
-    	adapter.swapCursor(cursor);
+    	mAdapter.swapCursor(cursor);
     }
     
     @Override
     public void onLoaderReset(Loader <Cursor> loader) {
-        adapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 }

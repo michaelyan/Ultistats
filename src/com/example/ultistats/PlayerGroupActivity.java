@@ -34,7 +34,7 @@ public class PlayerGroupActivity extends FragmentActivity {
 	            .setTabListener(new PlayerGroupTabListener<PlayerListFragment>(
 	                    this, "artist", PlayerListFragment.class));
 	    actionBar.addTab(tab);
-//
+
 	    tab = actionBar.newTab()
 	        .setText("Groups")
 	        .setTabListener(new PlayerGroupTabListener<GroupListFragment>(
@@ -45,36 +45,36 @@ public class PlayerGroupActivity extends FragmentActivity {
     /**************************************************************************
      * Tab Listener Class *****************************************************
      **************************************************************************/
-    private class PlayerGroupTabListener<T extends Object> implements ActionBar.TabListener {
-        private Fragment mFragment;
-        private final Activity mActivity;
-        private final String mTag;
-        private final Class<T> mClass;
+    private class PlayerGroupTabListener<T extends Fragment> implements ActionBar.TabListener {
+        private Fragment fragment;
+        private final Activity activity;
+        private final String tag;
+        private final Class<T> clz;
         
         public PlayerGroupTabListener(Activity activity, String tag, Class<T> clz) {
-            mActivity = activity;
-            mTag = tag;
-            mClass = clz;
+            this.activity = activity;
+            this.tag = tag;
+            this.clz = clz;
         }
 
         @Override
         public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
             // Check if the fragment is already initialized
-            if (mFragment == null) {
+            if (fragment == null) {
                 // If not, instantiate and add it to the activity
-                mFragment = Fragment.instantiate(mActivity, mClass.getName());
-                ft.add(android.R.id.content, mFragment, mTag);
+                fragment = Fragment.instantiate(activity, clz.getName());
+                ft.add(android.R.id.content, fragment, tag);
             } else {
                 // If it exists, simply attach it in order to show it
-                ft.attach(mFragment);
+                ft.attach(fragment);
             }
         }
 
         @Override
         public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {
-            if (mFragment != null) {
+            if (fragment != null) {
                 // Detach the fragment, because another one is being attached
-                ft.detach(mFragment);
+                ft.detach(fragment);
             }
         }
 

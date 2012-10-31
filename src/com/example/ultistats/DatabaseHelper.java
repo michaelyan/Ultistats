@@ -34,6 +34,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 		
 	}
-
-	
 }

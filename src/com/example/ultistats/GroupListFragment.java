@@ -38,13 +38,13 @@ import com.example.ultistats.model.Player.PlayerRow;
 
 public class GroupListFragment extends Fragment implements LoaderCallbacks<Cursor>  {
 
-    private ExpandableAdapter adapter;
-    private ExpandableListView groupListView;
+    private ExpandableAdapter mAdapter;
+    private ExpandableListView mGroupListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new ExpandableAdapter();
+        mAdapter = new ExpandableAdapter();
         setHasOptionsMenu(true);
 
         //Asynchronously load the data  for the player list
@@ -62,7 +62,7 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         
-        groupListView = (ExpandableListView) getView().findViewById(R.id.group_list);
+        mGroupListView = (ExpandableListView) getView().findViewById(R.id.group_list);
         bindPlayerClick();
         bindItemLongClick();
     }
@@ -71,11 +71,11 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
      * Event Handlers *********************************************************
      **************************************************************************/
     public void bindPlayerClick() {
-        groupListView.setOnChildClickListener(new OnChildClickListener() {@Override
+        mGroupListView.setOnChildClickListener(new OnChildClickListener() {@Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
             		int childPosition, long id) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), PlayerViewActivity.class);
-                intent.putExtra(PlayerViewActivity.PLAYER_ID, String.valueOf(id));
+                intent.putExtra(Player.PLAYER_ID_COLUMN, String.valueOf(id));
                 startActivity(intent);
                 return false;
             }
@@ -83,14 +83,14 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
     }
     
     public void bindItemLongClick() {
-        groupListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        mGroupListView.setOnItemLongClickListener(new OnItemLongClickListener() {
         	private ActionMode actionMode;
         	@Override
-            public boolean onItemLongClick(AdapterView <?> adapter, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView <?> mAdapter, View view, int position, long id) {
                 if (actionMode != null)
                 	return false;
 
-                String groupId = String.valueOf(groupListView.getPackedPositionGroup(id));
+                String groupId = String.valueOf(mGroupListView.getPackedPositionGroup(id));
                 actionMode = getActivity().startActionMode(actionModeCallback);
                 actionMode.setTag(String.valueOf(groupId));
                 view.setSelected(true);
@@ -115,7 +115,7 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
 		            switch (item.getItemId()) {
 		                case R.id.group_edit:
 		                    Intent intent = new Intent(getActivity(), GroupEditActivity.class);
-		                    intent.putExtra(GroupEditActivity.GROUP_ID, (String) mode.getTag());
+		                    intent.putExtra(Group.GROUP_ID_COLUMN, (String) mode.getTag());
 		                    startActivity(intent);
 		                    mode.finish();
 		                    return true;
@@ -302,14 +302,14 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
         if (loader.getId() == Group.ALL_CODE) 
-        	adapter.setGroupCursor(cursor);
+        	mAdapter.setGroupCursor(cursor);
         else if (loader.getId() == Group.PLAYERS_CODE) 
-        	adapter.setPlayerCursor(cursor);
+        	mAdapter.setPlayerCursor(cursor);
 
-        if (adapter.ready()) {
-            adapter.setupGroups();
-            adapter.setupPlayers();
-            groupListView.setAdapter(adapter);
+        if (mAdapter.ready()) {
+            mAdapter.setupGroups();
+            mAdapter.setupPlayers();
+            mGroupListView.setAdapter(mAdapter);
         }
     }
 
@@ -317,7 +317,7 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
     public void onLoaderReset(Loader <Cursor> loader) {
         //How to remove cursor error?
         Log.i("On Loader Reset", String.valueOf(loader.getId()));
-        adapter.closeGroupCursor();
-        adapter.closePlayerCursor();
+        mAdapter.closeGroupCursor();
+        mAdapter.closePlayerCursor();
     }
 }

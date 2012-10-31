@@ -23,10 +23,10 @@ import android.widget.TextView;
 
 public class PlayerEditActivity extends FragmentActivity {
 	
-	private String playerId;
-	private EditText fnameEditText;
-	private EditText lnameEditText;
-	private EditText numberEditText;
+	private String mPlayerId;
+	private EditText mFnameEditText;
+	private EditText mLnameEditText;
+	private EditText mNumberEditText;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,44 +34,46 @@ public class PlayerEditActivity extends FragmentActivity {
         Intent intent = getIntent();
         setContentView(R.layout.player_edit);
         
-        playerId = intent.getStringExtra(PlayerViewActivity.PLAYER_ID);
-        fnameEditText = (EditText) findViewById(R.id.edit_fname);
-        lnameEditText = (EditText) findViewById(R.id.edit_lname);
-        numberEditText = (EditText) findViewById(R.id.edit_number);
+        mPlayerId = intent.getStringExtra(Player.PLAYER_ID_COLUMN);
+        mFnameEditText = (EditText) findViewById(R.id.edit_fname);
+        mLnameEditText = (EditText) findViewById(R.id.edit_lname);
+        mNumberEditText = (EditText) findViewById(R.id.edit_number);
         
         //Creating a new player
-        if (playerId == null)
-        	return;
-        
-        Cursor cursor = getContentResolver().query(
-	        Uri.withAppendedPath(Player.CONTENT_URI, playerId), null, null, null, null);
-        
-        cursor.moveToFirst();
-        String fname = cursor.getString(cursor.getColumnIndex(Player.FIRST_NAME_COLUMN));
-        fnameEditText.setText(fname);
-        
-        String lname = cursor.getString(cursor.getColumnIndex(Player.LAST_NAME_COLUMN));
-        lnameEditText.setText(lname);
-        
-        String number = cursor.getString(cursor.getColumnIndex(Player.NUMBER_COLUMN));
-        numberEditText.setText(number);
-        
-        cursor.close();
+        if (mPlayerId == null) {
+            return;
+        //Populate the edit text fields with the player info
+        } else {
+            Cursor cursor = getContentResolver().query(
+                    Uri.withAppendedPath(Player.CONTENT_URI, mPlayerId), null, null, null, null);
+
+            cursor.moveToFirst();
+            String fname = cursor.getString(cursor.getColumnIndex(Player.FIRST_NAME_COLUMN));
+            mFnameEditText.setText(fname);
+
+            String lname = cursor.getString(cursor.getColumnIndex(Player.LAST_NAME_COLUMN));
+            mLnameEditText.setText(lname);
+
+            String number = cursor.getString(cursor.getColumnIndex(Player.NUMBER_COLUMN));
+            mNumberEditText.setText(number);
+
+            cursor.close();
+        }
     }
     
     public void savePlayer(View view) {
     	ContentValues playerValues = new ContentValues();
 
-    	String fname = fnameEditText.getText().toString();
-    	String lname = lnameEditText.getText().toString();
-    	String number = numberEditText.getText().toString();
+    	String fname = mFnameEditText.getText().toString();
+    	String lname = mLnameEditText.getText().toString();
+    	String number = mNumberEditText.getText().toString();
     	
     	if (fname.length() == 0 && lname.length() == 0) {
-    		fnameEditText.setError("First name required");
-    		fnameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+    		mFnameEditText.setError("First name required");
+    		mFnameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
     		    @Override
     		    public void onFocusChange(View v, boolean hasFocus) {
-    		    	fnameEditText.setError(null);
+    		    	mFnameEditText.setError(null);
     		    }
     		});
     		return;
@@ -81,13 +83,13 @@ public class PlayerEditActivity extends FragmentActivity {
 		playerValues.put(Player.LAST_NAME_COLUMN, lname);
 		playerValues.put(Player.NUMBER_COLUMN, number);
 		
-    	if (playerId == null)
+    	if (mPlayerId == null)
 	    	getContentResolver().insert(Player.NEW_URI, playerValues);
     	else  {
 	    	String selectionClause = "_id = ?";
-	    	String[] selectionArgs = {playerId};
+	    	String[] selectionArgs = {mPlayerId};
 	    	getContentResolver().update(
-	    		Uri.withAppendedPath(Player.CONTENT_URI, playerId), playerValues, selectionClause, selectionArgs 
+	    		Uri.withAppendedPath(Player.CONTENT_URI, mPlayerId), playerValues, selectionClause, selectionArgs
 	    	); 
     	}
     	

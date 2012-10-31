@@ -34,8 +34,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class PlayerListFragment extends Fragment implements LoaderCallbacks<Cursor> {
 	
-    private ListView playerListView;
-    private SimpleCursorAdapter adapter;
+    private ListView mPlayerListView;
+    private SimpleCursorAdapter mAdapter;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
         //The TextViews that will display the data
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
         
-        adapter = new SimpleCursorAdapter(
+        mAdapter = new SimpleCursorAdapter(
 	        getActivity().getApplicationContext(), R.layout.player_list_entry, null, columns, to, 0); //what flags?
     }
     
@@ -64,8 +64,8 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         
-        playerListView = (ListView) getView().findViewById(R.id.player_list);
-        playerListView.setAdapter(adapter);
+        mPlayerListView = (ListView) getView().findViewById(R.id.player_list);
+        mPlayerListView.setAdapter(mAdapter);
         
 	    bindPlayerClick();
 	    bindPlayerLongClick();
@@ -75,21 +75,21 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
      * Event Handlers *********************************************************
      **************************************************************************/
     public void bindPlayerClick() {
-        playerListView.setOnItemClickListener(new OnItemClickListener() {
+        mPlayerListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), PlayerViewActivity.class);
-                intent.putExtra(PlayerViewActivity.PLAYER_ID, String.valueOf(id));
+                intent.putExtra(Player.PLAYER_ID_COLUMN, String.valueOf(id));
                 startActivity(intent);
             }
         });
     }
     
     public void bindPlayerLongClick() {
-        playerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        mPlayerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 		    private ActionMode actionMode;
 		    
         	@Override
-            public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> mAdapter, View view, int position, long id) {
                 if (actionMode != null)
                 	return false;
 
@@ -118,7 +118,7 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
 		            switch (item.getItemId()) {
 		                case R.id.player_edit:
 		                    Intent intent = new Intent(getActivity().getApplicationContext(), PlayerEditActivity.class);
-		                    intent.putExtra(PlayerViewActivity.PLAYER_ID, (String) mode.getTag());
+		                    intent.putExtra(Player.PLAYER_ID_COLUMN, (String) mode.getTag());
 		                    startActivity(intent);
 		                    mode.finish();
 		                    return true;
@@ -171,11 +171,11 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
     
     @Override
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
-    	adapter.swapCursor(cursor);
+    	mAdapter.swapCursor(cursor);
     }
     
     @Override
     public void onLoaderReset(Loader <Cursor> loader) {
-        adapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 }

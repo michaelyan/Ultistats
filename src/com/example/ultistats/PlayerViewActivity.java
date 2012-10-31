@@ -16,25 +16,23 @@ import android.util.Log;
 import android.widget.TextView;
 
 public class PlayerViewActivity extends FragmentActivity {
-    //A key used to pass information to this activity
-	public static final String PLAYER_ID = "intent_player_id";
-    private String playerID;
+    private String mPlayerId;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        playerID = intent.getStringExtra(PLAYER_ID);
+        mPlayerId = intent.getStringExtra(Player.PLAYER_ID_COLUMN);
         setContentView(R.layout.player_list_entry);
         
         Cursor cursor = getContentResolver().query(
-	        Uri.withAppendedPath(Player.CONTENT_URI, playerID), null, null, null, null);
+	        Uri.withAppendedPath(Player.CONTENT_URI, mPlayerId), null, null, null, null);
         
         cursor.moveToFirst();
         String fname = cursor.getString(cursor.getColumnIndex("fname"));
         TextView fnameTextView = (TextView) findViewById(R.id.fname);
         fnameTextView.setText(fname);
-        
+
         String lname = cursor.getString(cursor.getColumnIndex("lname"));
         TextView lnameTextView = (TextView) findViewById(R.id.lname);
         lnameTextView.setText(lname);
@@ -66,7 +64,7 @@ public class PlayerViewActivity extends FragmentActivity {
                 return true;
             case R.id.player_edit:
                 Intent intent = new Intent(this, PlayerEditActivity.class);
-                intent.putExtra(PlayerViewActivity.PLAYER_ID, String.valueOf(playerID));
+                intent.putExtra(Player.PLAYER_ID_COLUMN, String.valueOf(mPlayerId));
                 startActivity(intent);
 
             default:

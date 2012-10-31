@@ -30,50 +30,31 @@ import android.view.View.OnFocusChangeListener;
 
 public class GroupEditActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
 	
-	public static final String GROUP_ID = "intent_group_id";
-	
-	private String groupId;
-	private Cursor cursor;
-	private EditText groupNameEditText;
-	private ListView currentPlayerListView;
-	private ListView otherPlayerListView;
-    private SimpleCursorAdapter groupAdapter;
-    private SimpleCursorAdapter groupExclusiveAdapter;
+	private String mGroupId;
+	private EditText mGroupNameEditText;
+	private ListView mCurrentPlayerListView;
+	private ListView mOtherPlayerListView;
+    private SimpleCursorAdapter mGroupAdapter;
+    private SimpleCursorAdapter mGroupExclusiveAdapter;
     
     //Whether it is a new group being created
-    private boolean newGroupFlag = false;
+    private boolean mNewGroupFlag = false;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
         setContentView(R.layout.group_edit);
-        
-        groupNameEditText = (EditText) findViewById(R.id.edit_group_name);
+
+        mGroupId = getOrCreateGroup();
+        mGroupNameEditText = (EditText) findViewById(R.id.edit_group_name);
         
         Bundle bundle = new Bundle();
-        
-        groupId = intent.getStringExtra(GROUP_ID);
-        if (groupId != null) {
-	        bundle.putString("groupId", groupId);
-	        
-	        cursor = getContentResolver().query(
-		        Uri.withAppendedPath(Group.GROUP_NAME_URI, groupId), null, null, null, null);
-	        
-	        cursor.moveToFirst();
-	        String groupName = cursor.getString(cursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
-	        groupNameEditText.setText(groupName);
-        }
-        else {
-        	newGroupFlag = true;
-	        Uri insertedUri = getContentResolver().insert(Group.NEW_URI, null);
-	        groupId = insertedUri.getLastPathSegment();
-	        bundle.putString("groupId", groupId);
-        }
-        
+        bundle.putString(Group.GROUP_ID_COLUMN, mGroupId);
+
         getSupportLoaderManager().initLoader(Group.GROUP_CODE, bundle, this);
         getSupportLoaderManager().initLoader(Group.GROUP_EXCLUSIVE_CODE, bundle, this);
-        
+
+        setupGroupName();
         setupAdapter();
         bindPlayerClick();
     }
@@ -81,16 +62,39 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     public void onDestroy() {
     	//They were in the middle of making a group and exited, so remove the entries from the database
     	super.onDestroy();
-    	if (newGroupFlag) {
-			int deleted = getContentResolver().delete(
-		        Group.DELETE_GROUP_URI, null, new String[]{groupId});
+    	if (mNewGroupFlag) {
+			getContentResolver().delete(
+		        Group.DELETE_GROUP_URI, null, new String[]{mGroupId});
     	}
     }
-    
-    public void setupGroupName() {
-    	
+
+    /**
+     * Gets the group id of the intent that started this activity. Otherwise create a new group and gets the new id.
+     * @return The id of the group that was in the intent or the newly created group.
+     */
+    public String getOrCreateGroup() {
+        Intent intent = getIntent();
+        String intentGroupId = intent.getStringExtra(Group.GROUP_ID_COLUMN);
+
+        if (intentGroupId != null)
+            return intentGroupId;
+        else {
+            mNewGroupFlag = true;
+            Uri insertedUri = getContentResolver().insert(Group.NEW_URI, null);
+            String mNewGroupId = insertedUri.getLastPathSegment();
+            return mNewGroupId;
+        }
     }
-    
+
+    public void setupGroupName() {
+        Cursor cursor = getContentResolver().query(
+                Uri.withAppendedPath(Group.GROUP_NAME_URI, mGroupId), null, null, null, null);
+        if (cursor.moveToFirst()) {
+            String mGroupName = cursor.getString(cursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
+            mGroupNameEditText.setText(mGroupName);
+        }
+    }
+
     public void setupAdapter() {
         //The columns that should be bound to the UI
         String[] columns = new String[] { Player.FIRST_NAME_COLUMN, Player.LAST_NAME_COLUMN, Player.NUMBER_COLUMN };
@@ -98,37 +102,36 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
         
         // create the adapter using the cursor pointing to the desired data as well as the layout information
-        groupAdapter = new SimpleCursorAdapter(
+        mGroupAdapter = new SimpleCursorAdapter(
 	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
         
-        groupExclusiveAdapter = new SimpleCursorAdapter(
+        mGroupExclusiveAdapter = new SimpleCursorAdapter(
 	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
 
-        currentPlayerListView = (ListView) findViewById(R.id.current_players);
-        currentPlayerListView.setAdapter(groupAdapter);
+        mCurrentPlayerListView = (ListView) findViewById(R.id.current_players);
+        mCurrentPlayerListView.setAdapter(mGroupAdapter);
         
-        otherPlayerListView = (ListView) findViewById(R.id.other_players);
-        otherPlayerListView.setAdapter(groupExclusiveAdapter);
+        mOtherPlayerListView = (ListView) findViewById(R.id.other_players);
+        mOtherPlayerListView.setAdapter(mGroupExclusiveAdapter);
     }
     
     /**************************************************************************
      * Click Actions **********************************************************
      **************************************************************************/
     public void bindPlayerClick() {
-	    currentPlayerListView.setOnItemClickListener(new OnItemClickListener() {
+	    mCurrentPlayerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				int deleted = getContentResolver().delete(
-			        Group.DELETE_PLAYER_FROM_GROUP_URI, null, new String[]{String.valueOf(id), groupId});
+			        Group.DELETE_PLAYER_FROM_GROUP_URI, null, new String[]{String.valueOf(id), mGroupId});
 		    }     
 	    });
 	    
-	    otherPlayerListView.setOnItemClickListener(new OnItemClickListener() {
+	    mOtherPlayerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-    	Log.i("player clicked", "wtf");
 		    	ContentValues newPlayerGroupValues = new ContentValues();
-				newPlayerGroupValues.put(Group.GROUP_ID_COLUMN, groupId); 
+				newPlayerGroupValues.put(Group.GROUP_ID_COLUMN, mGroupId);
 				newPlayerGroupValues.put(Player.PLAYER_ID_COLUMN, String.valueOf(id)); 
 				getContentResolver().insert(
 			        Group.INSERT_PLAYER_INTO_GROUP_URI, newPlayerGroupValues);
@@ -167,29 +170,29 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     public void saveGroup(MenuItem item) {
     	ContentValues groupValues = new ContentValues();
     	
-    	String groupName = groupNameEditText.getText().toString();
+    	String mGroupName = mGroupNameEditText.getText().toString();
     	
-    	if (groupName.length() == 0) {
-    		groupNameEditText.setError("Group name required");
-    		groupNameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+    	if (mGroupName.length() == 0) {
+    		mGroupNameEditText.setError("Group name required");
+    		mGroupNameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
     		    @Override
     		    public void onFocusChange(View v, boolean hasFocus) {
-    		    	groupNameEditText.setError(null);
+    		    	mGroupNameEditText.setError(null);
     		    }
     		});
     		return;
     	}
     	
-		groupValues.put(Group.GROUP_NAME_COLUMN, groupName); 
+		groupValues.put(Group.GROUP_NAME_COLUMN, mGroupName);
 
     	String selectionClause = "_id = ?";
-    	String[] selectionArgs = {groupId};
+    	String[] selectionArgs = {mGroupId};
     	getContentResolver().update(
-    		Uri.withAppendedPath(Group.CONTENT_URI, groupId), groupValues, selectionClause, selectionArgs 
+    		Uri.withAppendedPath(Group.CONTENT_URI, mGroupId), groupValues, selectionClause, selectionArgs
     	); 
     	
     	//When saving a group, don't call onDestroy()
-    	newGroupFlag = false;
+    	mNewGroupFlag = false;
     	finish();
     }
 
@@ -198,16 +201,16 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
      **************************************************************************/
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-    	String groupId = bundle.getString("groupId");
+    	String mGroupId = bundle.getString("mGroupId");
         CursorLoader cursorLoader;
         switch (id) {
             case Group.GROUP_CODE:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-			        Uri.withAppendedPath(Group.GROUP_URI, groupId), null, null, null, null);
+			        Uri.withAppendedPath(Group.GROUP_URI, mGroupId), null, null, null, null);
                 break;
             case Group.GROUP_EXCLUSIVE_CODE:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-			        Uri.withAppendedPath(Group.GROUP_EXCLUSIVE_URI, groupId), null, null, null, null);
+			        Uri.withAppendedPath(Group.GROUP_EXCLUSIVE_URI, mGroupId), null, null, null, null);
                 break;
             default:
                 cursorLoader = null;
@@ -220,14 +223,14 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     public void onLoadFinished(Loader <Cursor> loader, Cursor cursor) {
     	//if ready
         if (loader.getId() == Group.GROUP_CODE) 
-        	groupAdapter.swapCursor(cursor);
+        	mGroupAdapter.swapCursor(cursor);
         else if (loader.getId() == Group.GROUP_EXCLUSIVE_CODE) 
-        	groupExclusiveAdapter.swapCursor(cursor);
+        	mGroupExclusiveAdapter.swapCursor(cursor);
     }
     
     @Override
     public void onLoaderReset(Loader <Cursor> loader) {
-    	groupAdapter.swapCursor(null);
-    	groupExclusiveAdapter.swapCursor(null);
+    	mGroupAdapter.swapCursor(null);
+    	mGroupExclusiveAdapter.swapCursor(null);
     }
 }
