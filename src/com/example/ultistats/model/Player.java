@@ -39,7 +39,8 @@ public class Player extends Base {
 	}
 	
 	private static final String TABLE_NAME = "tbl_player";
-	public static final String PLAYER_ID_COLUMN = "player_id";
+	public static final String PLAYER_ID_COLUMN = "_id";
+    public static final String PLAYER_ID_JOIN_COLUMN = "player_id";
 	public static final String FIRST_NAME_COLUMN = "fname";
 	public static final String LAST_NAME_COLUMN = "lname";
     public static final String NICKNAME_COLUMN = "nickname";
@@ -67,14 +68,14 @@ public class Player extends Base {
 		public String getFname() { return fname; }
 
 		public String getLname() { return lname; }
-		
-		public void setId(int _id) { this._id = _id; }
 
-		public void setFname(String fname) { this.fname = fname; }
+        public String getNickname() {
+            if (!("").equals(nickname))
+                return " \"" + nickname + "\" ";
+            else
+                return " ";
+        }
 
-		public void setLname(String lname) { this.lname = lname; }
-
-		public String toString() { return '(' + this.fname + ',' + this.lname + ')'; }
 	}
 
 	@Override

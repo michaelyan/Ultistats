@@ -83,7 +83,11 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
             }
         });
     }
-    
+
+    /**********
+     * long click child vs group, different actions
+     *http://stackoverflow.com/questions/2353074/android-long-click-on-the-child-views-of-a-expandablelistview
+     */
     public void bindItemLongClick() {
         groupListView.setOnItemLongClickListener(new OnItemLongClickListener() {
         	private ActionMode actionMode;
@@ -123,16 +127,16 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
 		                    return true;
                         case R.id.group_delete:
                             final String tmp = (String) mode.getTag();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder
+                            new AlertDialog.Builder(getActivity())
+                                    //no strings hardcoded
                                     .setMessage("Are you sure you want to delete this group?")
+                                    .setNegativeButton("No", null)
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             getActivity().getContentResolver().delete(
                                                     Group.DELETE_GROUP_URI, null, new String[]{ tmp });
                                         }
                                     })
-                                    .setNegativeButton("No", null)
                                     .show();
                             mode.finish();
                             return true;
@@ -185,8 +189,8 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         	groups.clear();
             groupCursor.moveToFirst();
             while (groupCursor.isAfterLast() == false) {
-            	int _id = groupCursor.getInt(groupCursor.getColumnIndex("_id"));
-            	String groupName = groupCursor.getString(groupCursor.getColumnIndex("group_name"));
+            	int _id = groupCursor.getInt(groupCursor.getColumnIndex(Group.GROUP_ID_COLUMN));
+            	String groupName = groupCursor.getString(groupCursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
 
             	Group.GroupRow gr = new Group.GroupRow(_id, groupName);
             	groups.add(gr);
@@ -199,12 +203,12 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         public void setupPlayers() {
             playerCursor.moveToFirst();
             while (!playerCursor.isAfterLast()) {
-                int _id = playerCursor.getInt(playerCursor.getColumnIndex("_id"));
-                int group_id = playerCursor.getInt(playerCursor.getColumnIndex("group_id"));
-                String fname = playerCursor.getString(playerCursor.getColumnIndex("fname"));
-                String lname = playerCursor.getString(playerCursor.getColumnIndex("lname"));
-                String nickname = playerCursor.getString(playerCursor.getColumnIndex("nickname"));
-                int number = playerCursor.getInt(playerCursor.getColumnIndex("number"));
+                int _id = playerCursor.getInt(playerCursor.getColumnIndex(Group.GROUP_ID_COLUMN));
+                int group_id = playerCursor.getInt(playerCursor.getColumnIndex(Group.GROUP_ID_JOIN_COLUMN));
+                String fname = playerCursor.getString(playerCursor.getColumnIndex(Player.FIRST_NAME_COLUMN));
+                String lname = playerCursor.getString(playerCursor.getColumnIndex(Player.LAST_NAME_COLUMN));
+                String nickname = playerCursor.getString(playerCursor.getColumnIndex(Player.NICKNAME_COLUMN));
+                int number = playerCursor.getInt(playerCursor.getColumnIndex(Player.NUMBER_COLUMN));
 
                 Player.PlayerRow pr = new Player.PlayerRow(_id, fname, lname, nickname, number);
                 playerGroupHashMap.get(group_id).add(pr);
@@ -224,7 +228,7 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         		boolean isLastChild, View convertView, ViewGroup parent) {
             TextView view = new TextView(getActivity());
             PlayerRow pr = getChild(groupPosition, childPosition);
-            String name = pr.getFname() + pr.getLname();
+            String name = pr.getFname() + pr.getNickname() + pr.getLname();
             view.setText(name);
             return view;
         }

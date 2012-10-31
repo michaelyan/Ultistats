@@ -63,8 +63,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     	//They were in the middle of making a group and exited, so remove the entries from the database
     	super.onDestroy();
     	if (mNewGroupFlag) {
-			getContentResolver().delete(
-		        Group.DELETE_GROUP_URI, null, new String[]{mGroupId});
+			getContentResolver().delete(Group.DELETE_GROUP_URI, null, new String[]{ mGroupId });
     	}
     }
 
@@ -131,8 +130,8 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 		    	ContentValues newPlayerGroupValues = new ContentValues();
-				newPlayerGroupValues.put(Group.GROUP_ID_COLUMN, mGroupId);
-				newPlayerGroupValues.put(Player.PLAYER_ID_COLUMN, String.valueOf(id)); 
+				newPlayerGroupValues.put(Group.GROUP_ID_JOIN_COLUMN, mGroupId);
+				newPlayerGroupValues.put(Player.PLAYER_ID_JOIN_COLUMN, String.valueOf(id));
 				getContentResolver().insert(
 			        Group.INSERT_PLAYER_INTO_GROUP_URI, newPlayerGroupValues);
 		    }     

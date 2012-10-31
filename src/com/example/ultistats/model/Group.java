@@ -67,7 +67,8 @@ public class Group extends Base {
 	
 	private static final String TABLE_NAME = "tbl_group";
 	private static final String JOIN_TABLE_NAME = "tbl_player_group";
-	public static final String GROUP_ID_COLUMN = "group_id";
+    public static final String GROUP_ID_COLUMN= "_id";
+	public static final String GROUP_ID_JOIN_COLUMN = "group_id";
 	public static final String GROUP_NAME_COLUMN = "group_name";
 
 	//Wrapper class for groups
@@ -116,7 +117,7 @@ public class Group extends Base {
 	    long id = 0;
 	    switch (uriType) {
 	        case NEW_CODE:
-	        	String nullColumnHack = "group_name";
+	        	String nullColumnHack = Group.GROUP_NAME_COLUMN;
 	            id = db.insert(TABLE_NAME, nullColumnHack, values);
 	            break;
 	        case INSERT_PLAYER_INTO_GROUP_CODE:
