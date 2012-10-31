@@ -1,5 +1,6 @@
 package com.example.ultistats;
 
+import android.app.ActionBar;
 import com.example.ultistats.model.Group;
 import com.example.ultistats.model.Player;
 
@@ -139,6 +140,8 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
      * Menu Actions ***********************************************************
      **************************************************************************/
     public boolean onCreateOptionsMenu(Menu menu) {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         getMenuInflater().inflate(R.menu.group_edit_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -146,6 +149,13 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent parentActivityIntent = new Intent(this, PlayerGroupActivity.class);
+                parentActivityIntent.addFlags(
+                        Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(parentActivityIntent);
+                finish();
+                return true;
             case R.id.group_save:
             	saveGroup(item);
                 return true;

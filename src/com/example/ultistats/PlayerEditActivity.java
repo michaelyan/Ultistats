@@ -1,5 +1,8 @@
 package com.example.ultistats;
 
+import android.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
 import com.example.ultistats.model.Player;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,7 +34,7 @@ public class PlayerEditActivity extends FragmentActivity {
         Intent intent = getIntent();
         setContentView(R.layout.player_edit);
         
-        playerId = intent.getStringExtra(PlayerActivity.PLAYER_ID);
+        playerId = intent.getStringExtra(PlayerViewActivity.PLAYER_ID);
         fnameEditText = (EditText) findViewById(R.id.edit_fname);
         lnameEditText = (EditText) findViewById(R.id.edit_lname);
         numberEditText = (EditText) findViewById(R.id.edit_number);
@@ -71,15 +74,6 @@ public class PlayerEditActivity extends FragmentActivity {
     		    	fnameEditText.setError(null);
     		    }
     		});
-    		
-//    		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-//    		alertDialog.setTitle("Error");
-//    		alertDialog.setMessage("First name or last name required");
-//    		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-//    		   public void onClick(DialogInterface dialog, int which) {
-//    		   }
-//    		});
-//    		alertDialog.show();
     		return;
     	}
     	
@@ -98,5 +92,30 @@ public class PlayerEditActivity extends FragmentActivity {
     	}
     	
     	finish();
+    }
+
+    /**************************************************************************
+     * Menu Actions ***********************************************************
+     **************************************************************************/
+    public boolean onCreateOptionsMenu(Menu menu) {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        getMenuInflater().inflate(R.menu.player_edit_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent parentActivityIntent = new Intent(this, PlayerGroupActivity.class);
+                parentActivityIntent.addFlags(
+                        Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(parentActivityIntent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -74,8 +74,8 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         groupListView.setOnChildClickListener(new OnChildClickListener() {@Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
             		int childPosition, long id) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), PlayerActivity.class);
-                intent.putExtra(PlayerActivity.PLAYER_ID, String.valueOf(id));
+                Intent intent = new Intent(getActivity().getApplicationContext(), PlayerViewActivity.class);
+                intent.putExtra(PlayerViewActivity.PLAYER_ID, String.valueOf(id));
                 startActivity(intent);
                 return false;
             }

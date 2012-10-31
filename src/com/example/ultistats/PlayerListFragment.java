@@ -77,8 +77,8 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
     public void bindPlayerClick() {
         playerListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), PlayerActivity.class);
-                intent.putExtra(PlayerActivity.PLAYER_ID, String.valueOf(id));
+                Intent intent = new Intent(getActivity().getApplicationContext(), PlayerViewActivity.class);
+                intent.putExtra(PlayerViewActivity.PLAYER_ID, String.valueOf(id));
                 startActivity(intent);
             }
         });
@@ -118,7 +118,7 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
 		            switch (item.getItemId()) {
 		                case R.id.player_edit:
 		                    Intent intent = new Intent(getActivity().getApplicationContext(), PlayerEditActivity.class);
-		                    intent.putExtra(PlayerActivity.PLAYER_ID, (String) mode.getTag());
+		                    intent.putExtra(PlayerViewActivity.PLAYER_ID, (String) mode.getTag());
 		                    startActivity(intent);
 		                    mode.finish();
 		                    return true;

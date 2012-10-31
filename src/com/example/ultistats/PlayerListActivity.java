@@ -72,7 +72,7 @@ public class PlayerListActivity extends FragmentActivity implements LoaderCallba
     public void bindPlayerClick() {
         playerListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), PlayerViewActivity.class);
                 intent.putExtra(PLAYER_ID, String.valueOf(id));
                 startActivity(intent);
             }

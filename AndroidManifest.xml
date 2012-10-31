@@ -58,7 +58,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PlayerActivity"
+            android:name=".PlayerViewActivity"
             android:label="@string/title_activity_view_player" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
