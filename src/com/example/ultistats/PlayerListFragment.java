@@ -1,5 +1,7 @@
 package com.example.ultistats;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import com.example.ultistats.model.Base;
 import com.example.ultistats.model.Player;
 
@@ -104,7 +106,7 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
 		        @Override
 		        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 		            MenuInflater inflater = mode.getMenuInflater();
-		            inflater.inflate(R.menu.player_list_edit_menu, menu);
+		            inflater.inflate(R.menu.player_edit_menu, menu);
 		            return true;
 		        }
 
@@ -115,13 +117,27 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
 
 		        @Override
 		        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    final String playerId = (String) mode.getTag();
 		            switch (item.getItemId()) {
 		                case R.id.player_edit:
 		                    Intent intent = new Intent(getActivity().getApplicationContext(), PlayerEditActivity.class);
-		                    intent.putExtra(Player.PLAYER_ID_COLUMN, (String) mode.getTag());
+		                    intent.putExtra(Player.PLAYER_ID_COLUMN, playerId);
 		                    startActivity(intent);
 		                    mode.finish();
 		                    return true;
+                        case R.id.player_delete:
+                            new AlertDialog.Builder(getActivity())
+                                    .setMessage("Are you sure you want to delete this player?")
+                                    .setNegativeButton("No", null)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            getActivity().getContentResolver().delete(
+                                                    Player.DELETE_URI, null, new String[]{ playerId });
+                                        }
+                                    })
+                                    .show();
+                            mode.finish();
+                            return true;
 		                default:
 		                    return false;
 		            }

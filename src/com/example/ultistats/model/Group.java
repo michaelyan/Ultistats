@@ -20,10 +20,9 @@ public class Group extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + GROUP_BASE_PATH);
 	
-	public static final String NUMBER = "/#";
 	public static final String ALL = "/all";
 	public static final String PLAYERS = "/players";
-	public static final String GROUP = "";
+	public static final String GROUP = "/group";
 	public static final String GROUP_NAME = "/group_name";
 	public static final String GROUP_EXCLUSIVE = "/group_exclusive";
 	public static final String NEW = "/new";
@@ -43,7 +42,7 @@ public class Group extends Base {
 	
 	public static final Uri ALL_URI = Uri.withAppendedPath(Group.CONTENT_URI, ALL);
 	public static final Uri PLAYERS_URI = Uri.withAppendedPath(Group.CONTENT_URI, PLAYERS);
-	public static final Uri GROUP_URI = Group.CONTENT_URI;
+    public static final Uri GROUP_URI = Uri.withAppendedPath(Group.CONTENT_URI, GROUP);
 	public static final Uri GROUP_NAME_URI = Uri.withAppendedPath(Group.CONTENT_URI, GROUP_NAME);
 	public static final Uri GROUP_EXCLUSIVE_URI = Uri.withAppendedPath(Group.CONTENT_URI, GROUP_EXCLUSIVE);
 	public static final Uri NEW_URI = Uri.withAppendedPath(Group.CONTENT_URI, NEW);
@@ -56,9 +55,9 @@ public class Group extends Base {
 	static {
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + ALL, ALL_CODE); //Get all the groups (without players)
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + PLAYERS, PLAYERS_CODE); //Get all the players and their group info
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NUMBER, GROUP_CODE); //Get a single group and all its players
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + GROUP_NAME + NUMBER, GROUP_NAME_CODE); //Get a single group, but just it's name
-	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + GROUP_EXCLUSIVE + NUMBER, GROUP_EXCLUSIVE_CODE); //Get a single group and all its players
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + GROUP, GROUP_CODE); //Get a single group and all its players
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + GROUP_NAME, GROUP_NAME_CODE); //Get a single group, but just it's name
+	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + GROUP_EXCLUSIVE, GROUP_EXCLUSIVE_CODE); //Get a single group and all its players
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + NEW, NEW_CODE); //New group
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + DELETE_GROUP, DELETE_GROUP_CODE); //Remove a group and all its associated players
 	    sURIMatcher.addURI(AUTHORITY, GROUP_BASE_PATH + DELETE_PLAYER_FROM_GROUP, DELETE_PLAYER_FROM_GROUP_CODE); //Remove a player from a group
@@ -152,14 +151,14 @@ public class Group extends Base {
 	public int delete (Uri uri, String selection, String[] selectionArgs) {
 	    int uriType = sURIMatcher.match(uri);
 	    int rowsUpdated = 0;
-	    String query;
+	    String query = "";
 	    switch (uriType) {
 		    case DELETE_GROUP_CODE:
-		    	query = "" +
+		    	query =
 		    		"DELETE FROM tbl_group " +
 		    		"WHERE tbl_group._id = ?";
 		    	db.execSQL(query, selectionArgs);
-		    	query = "" +
+		    	query =
 		    		"DELETE FROM tbl_player_group " +
 		    		"WHERE tbl_player_group.group_id = ?";
 		    	db.execSQL(query, selectionArgs);
@@ -194,6 +193,7 @@ public class Group extends Base {
 				"FROM tbl_player " +
 				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id " +
 				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
+                "WHERE tbl_player.active = 1 " +
 				"ORDER BY group_name DESC";
 	    	cursor = db.rawQuery(query, null);
 	        break;
@@ -204,20 +204,23 @@ public class Group extends Base {
 				"JOIN tbl_player_group on tbl_player._id = tbl_player_group.player_id " +
 				"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
 				"WHERE group_id = ? " +
+                "AND tbl_player.active = 1 " +
 				"ORDER BY group_name DESC";
-	    	cursor = db.rawQuery(query, new String[]{uri.getLastPathSegment()});
+	    	cursor = db.rawQuery(query, selectionArgs);
 	        break;
 	    case GROUP_NAME_CODE:
-    		query = "SELECT _id, group_name " +
-    				"FROM tbl_group " +
-    				"WHERE _id = ?";
-	    	cursor = db.rawQuery(query, new String[]{uri.getLastPathSegment()});
+    		query =
+                "SELECT _id, group_name " +
+                "FROM tbl_group " +
+                "WHERE _id = ?";
+	    	cursor = db.rawQuery(query, selectionArgs);
 	    	break;
 	    case GROUP_EXCLUSIVE_CODE:
 	    	query = "" + 
 		    	"SELECT tbl_player._id, tbl_player.fname, tbl_player.lname, tbl_player.number " +
 	    		"FROM tbl_player " +
-		    	"WHERE tbl_player._id NOT IN " +
+                "WHERE tbl_player.active = 1 " +
+		    	"AND tbl_player._id NOT IN " +
 		    	"(" +
 			    	"SELECT tbl_player._id " +
 					"FROM tbl_player " +
@@ -225,7 +228,7 @@ public class Group extends Base {
 					"JOIN tbl_group on tbl_group._id = tbl_player_group.group_id " +
 					"WHERE group_id = ? " +
 				")";
-	    	cursor = db.rawQuery(query, new String[]{uri.getLastPathSegment()});
+	    	cursor = db.rawQuery(query, selectionArgs);
 	    	break;
 	    default:
 	        throw new IllegalArgumentException("Unknown URI");

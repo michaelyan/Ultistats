@@ -45,7 +45,7 @@ public class PlayerEditActivity extends FragmentActivity {
         //Populate the edit text fields with the player info
         } else {
             Cursor cursor = getContentResolver().query(
-                    Uri.withAppendedPath(Player.CONTENT_URI, mPlayerId), null, null, null, null);
+                    Player.PLAYER_URI, null, null, new String[]{ mPlayerId }, null);
 
             cursor.moveToFirst();
             String fname = cursor.getString(cursor.getColumnIndex(Player.FIRST_NAME_COLUMN));
@@ -89,7 +89,7 @@ public class PlayerEditActivity extends FragmentActivity {
 	    	String selectionClause = "_id = ?";
 	    	String[] selectionArgs = {mPlayerId};
 	    	getContentResolver().update(
-	    		Uri.withAppendedPath(Player.CONTENT_URI, mPlayerId), playerValues, selectionClause, selectionArgs
+	    		Player.PLAYER_URI, playerValues, selectionClause, selectionArgs
 	    	); 
     	}
     	

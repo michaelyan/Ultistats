@@ -26,7 +26,7 @@ public class PlayerViewActivity extends FragmentActivity {
         setContentView(R.layout.player_entry);
         
         Cursor cursor = getContentResolver().query(
-	        Uri.withAppendedPath(Player.CONTENT_URI, mPlayerId), null, null, null, null);
+                Player.PLAYER_URI, null, null, new String[]{ mPlayerId }, null);
         
         cursor.moveToFirst();
         String fname = cursor.getString(cursor.getColumnIndex("fname"));

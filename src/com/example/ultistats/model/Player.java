@@ -18,24 +18,28 @@ public class Player extends Base {
 	private static final String PLAYER_BASE_PATH = "players";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
-	
+
 	public static final String ALL = "/all";
-	public static final String PLAYER = "/#";
+	public static final String PLAYER = "/player";
 	public static final String NEW = "/new";
-	
+    public static final String DELETE = "/delete";
+
 	public static final int ALL_CODE = 1;
 	public static final int PLAYER_CODE = 2;
 	public static final int NEW_CODE = 3;
-	
+    public static final int DELETE_CODE = 4;
+
 	public static final Uri ALL_URI = Uri.withAppendedPath(Player.CONTENT_URI, ALL);
+    public static final Uri PLAYER_URI = Uri.withAppendedPath(Player.CONTENT_URI, PLAYER);
 	public static final Uri NEW_URI = Uri.withAppendedPath(Player.CONTENT_URI, NEW);
-	
-	private static final UriMatcher sURIMatcher = new UriMatcher(
-	        UriMatcher.NO_MATCH);
+    public static final Uri DELETE_URI = Uri.withAppendedPath(Player.CONTENT_URI, DELETE);
+
+	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
 	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + ALL, ALL_CODE);
-	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + "/#", PLAYER_CODE);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + PLAYER, PLAYER_CODE);
 	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + NEW, NEW_CODE);
+        sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + DELETE, DELETE_CODE);
 	}
 	
 	private static final String TABLE_NAME = "tbl_player";
@@ -83,10 +87,28 @@ public class Player extends Base {
 		db = new DatabaseHelper(getContext()).getWritableDatabase();
 		return true;
 	}
-	
-	public int delete(Uri arg0, String arg1, String[] arg2) {
-		// TODO Auto-generated method stub
-		return 0;
+
+    @Override
+    public int delete (Uri uri, String selection, String[] selectionArgs) {
+        int uriType = sURIMatcher.match(uri);
+        int rowsUpdated = 0;
+        String query;
+        switch (uriType) {
+            //Simply mark a player as inactive when deleting them because we still want to keep their stats
+            case DELETE_CODE:
+                query = "" +
+                        "UPDATE tbl_player " +
+                        "SET active = 0 " +
+                        "WHERE _id = ?";
+                db.execSQL(query, selectionArgs);
+                rowsUpdated = 1;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
+        return rowsUpdated;
 	}
 
 	@Override
@@ -132,14 +154,23 @@ public class Player extends Base {
 	public Cursor query(Uri uri, String[] projection, String selection,
 	        String[] selectionArgs, String sortOrder) {
 		Cursor cursor = null;
+        String query;
 	    int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
 	    case ALL_CODE:
-	    	cursor = db.rawQuery("SELECT * FROM tbl_player", null);
+            query =
+                "SELECT * " +
+                "FROM tbl_player " +
+                "WHERE tbl_player.active = 1";
+	    	cursor = db.rawQuery(query, null);
 	        break;
 	    case PLAYER_CODE:
 	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element
-	    	cursor = db.rawQuery("SELECT * FROM tbl_player WHERE _id = ?", uri.getLastPathSegment().split(" ", 1));
+            query =
+                "SELECT * FROM tbl_player " +
+                "WHERE _id = ? " +
+                "AND tbl_player.active = 1";
+	    	cursor = db.rawQuery(query, selectionArgs);
 	        break;
 	    default:
 	        throw new IllegalArgumentException("Unknown URI: " + uri);

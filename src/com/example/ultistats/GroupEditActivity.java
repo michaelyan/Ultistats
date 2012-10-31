@@ -47,7 +47,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 
         mGroupId = getOrCreateGroup();
         mGroupNameEditText = (EditText) findViewById(R.id.edit_group_name);
-        
+
         Bundle bundle = new Bundle();
         bundle.putString(Group.GROUP_ID_COLUMN, mGroupId);
 
@@ -87,7 +87,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 
     public void setupGroupName() {
         Cursor cursor = getContentResolver().query(
-                Uri.withAppendedPath(Group.GROUP_NAME_URI, mGroupId), null, null, null, null);
+                Group.GROUP_NAME_URI, null, null, new String[]{ mGroupId }, null);
         if (cursor.moveToFirst()) {
             String mGroupName = cursor.getString(cursor.getColumnIndex(Group.GROUP_NAME_COLUMN));
             mGroupNameEditText.setText(mGroupName);
@@ -121,7 +121,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 	    mCurrentPlayerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				int deleted = getContentResolver().delete(
+				getContentResolver().delete(
 			        Group.DELETE_PLAYER_FROM_GROUP_URI, null, new String[]{String.valueOf(id), mGroupId});
 		    }     
 	    });
@@ -185,9 +185,9 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 		groupValues.put(Group.GROUP_NAME_COLUMN, mGroupName);
 
     	String selectionClause = "_id = ?";
-    	String[] selectionArgs = {mGroupId};
+    	String[] selectionArgs = { mGroupId };
     	getContentResolver().update(
-    		Uri.withAppendedPath(Group.CONTENT_URI, mGroupId), groupValues, selectionClause, selectionArgs
+    		Group.GROUP_URI, groupValues, selectionClause, selectionArgs
     	); 
     	
     	//When saving a group, don't call onDestroy()
@@ -205,11 +205,11 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         switch (id) {
             case Group.GROUP_CODE:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-			        Uri.withAppendedPath(Group.GROUP_URI, mGroupId), null, null, null, null);
+			        Group.GROUP_URI, null, null, new String[] { mGroupId }, null);
                 break;
             case Group.GROUP_EXCLUSIVE_CODE:
                 cursorLoader = new CursorLoader(getApplicationContext(),
-			        Uri.withAppendedPath(Group.GROUP_EXCLUSIVE_URI, mGroupId), null, null, null, null);
+                    Group.GROUP_EXCLUSIVE_URI, null, null, new String[] { mGroupId }, null);
                 break;
             default:
                 cursorLoader = null;
