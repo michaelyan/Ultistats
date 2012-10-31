@@ -128,10 +128,9 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
                         case R.id.group_delete:
                             final String tmp = (String) mode.getTag();
                             new AlertDialog.Builder(getActivity())
-                                    //no strings hardcoded
-                                    .setMessage("Are you sure you want to delete this group?")
-                                    .setNegativeButton("No", null)
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    .setMessage(R.string.group_delete_confirm_message)
+                                    .setNegativeButton(R.string.no, null)
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             getActivity().getContentResolver().delete(
                                                     Group.DELETE_GROUP_URI, null, new String[]{ tmp });

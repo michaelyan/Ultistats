@@ -20,15 +20,15 @@ public class Group extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + GROUP_BASE_PATH);
 	
-	public static final String ALL = "/all";
-	public static final String PLAYERS = "/players";
-	public static final String GROUP = "/group";
-	public static final String GROUP_NAME = "/group_name";
-	public static final String GROUP_EXCLUSIVE = "/group_exclusive";
-	public static final String NEW = "/new";
-	public static final String DELETE_GROUP = "/delete_group";
-	public static final String DELETE_PLAYER_FROM_GROUP = "/delete_player_from_group";
-	public static final String INSERT_PLAYER_INTO_GROUP = "/insert_player_into_group";
+	private static final String ALL = "/all";
+	private static final String PLAYERS = "/players";
+	private static final String GROUP = "/group";
+	private static final String GROUP_NAME = "/group_name";
+	private static final String GROUP_EXCLUSIVE = "/group_exclusive";
+	private static final String NEW = "/new";
+	private static final String DELETE_GROUP = "/delete_group";
+	private static final String DELETE_PLAYER_FROM_GROUP = "/delete_player_from_group";
+	private static final String INSERT_PLAYER_INTO_GROUP = "/insert_player_into_group";
 	
 	public static final int ALL_CODE = 1;
 	public static final int PLAYERS_CODE = 2;

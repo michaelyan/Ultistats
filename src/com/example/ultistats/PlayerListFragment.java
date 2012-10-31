@@ -1,37 +1,24 @@
 package com.example.ultistats;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import com.example.ultistats.model.Base;
+import android.content.*;
 import com.example.ultistats.model.Player;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.ActionMode;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class PlayerListFragment extends Fragment implements LoaderCallbacks<Cursor> {
@@ -106,7 +93,7 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
 		        @Override
 		        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 		            MenuInflater inflater = mode.getMenuInflater();
-		            inflater.inflate(R.menu.player_edit_menu, menu);
+		            inflater.inflate(R.menu.player_edit_menu_1, menu);
 		            return true;
 		        }
 
@@ -119,23 +106,23 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
 		        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                     final String playerId = (String) mode.getTag();
 		            switch (item.getItemId()) {
-		                case R.id.player_edit:
+                        case R.id.player_view: {
+                            Intent intent = new Intent(getActivity().getApplicationContext(), PlayerViewActivity.class);
+                            intent.putExtra(Player.PLAYER_ID_COLUMN, playerId);
+                            startActivity(intent);
+                            mode.finish();
+                            return true;
+                        }
+		                case R.id.player_edit: {
 		                    Intent intent = new Intent(getActivity().getApplicationContext(), PlayerEditActivity.class);
 		                    intent.putExtra(Player.PLAYER_ID_COLUMN, playerId);
 		                    startActivity(intent);
 		                    mode.finish();
 		                    return true;
+                        }
                         case R.id.player_delete:
-                            new AlertDialog.Builder(getActivity())
-                                    .setMessage("Are you sure you want to delete this player?")
-                                    .setNegativeButton("No", null)
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            getActivity().getContentResolver().delete(
-                                                    Player.DELETE_URI, null, new String[]{ playerId });
-                                        }
-                                    })
-                                    .show();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            PlayerEditActivity.deletePlayer(playerId, builder, getActivity());
                             mode.finish();
                             return true;
 		                default:

@@ -19,10 +19,10 @@ public class Player extends Base {
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 
-	public static final String ALL = "/all";
-	public static final String PLAYER = "/player";
-	public static final String NEW = "/new";
-    public static final String DELETE = "/delete";
+	private static final String ALL = "/all";
+	private static final String PLAYER = "/player";
+	private static final String NEW = "/new";
+    private static final String DELETE = "/delete";
 
 	public static final int ALL_CODE = 1;
 	public static final int PLAYER_CODE = 2;

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
-        android:id="@+id/player_edit"
-        android:title="Edit">
+        android:id="@+id/player_delete"
+        android:title="Delete"
+        android:showAsAction="ifRoom|withText" >
     </item>
 
-</menu> 
+</menu>

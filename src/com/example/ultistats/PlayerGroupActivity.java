@@ -30,13 +30,13 @@ public class PlayerGroupActivity extends FragmentActivity {
 	    actionBar.setDisplayShowTitleEnabled(false);
 
 	    Tab tab = actionBar.newTab()
-	            .setText("Players") //Replace with strings.xml
+	            .setText(R.string.player_tab_title)
 	            .setTabListener(new PlayerGroupTabListener<PlayerListFragment>(
 	                    this, PlayerListFragment.class));
 	    actionBar.addTab(tab);
 
 	    tab = actionBar.newTab()
-	        .setText("Groups")
+	        .setText(R.string.group_tab_title)
 	        .setTabListener(new PlayerGroupTabListener<GroupListFragment>(
 	                this, GroupListFragment.class));
 	    actionBar.addTab(tab);
