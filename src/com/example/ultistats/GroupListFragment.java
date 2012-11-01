@@ -84,47 +84,48 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         });
     }
 
-    /**********
-     * long click child vs group, different actions
-     *http://stackoverflow.com/questions/2353074/android-long-click-on-the-child-views-of-a-expandablelistview
-     */
     public void bindItemLongClick() {
         groupListView.setOnItemLongClickListener(new OnItemLongClickListener() {
         	private ActionMode actionMode;
+
         	@Override
             public boolean onItemLongClick(AdapterView <?> adapter, View view, int position, long id) {
                 if (actionMode != null)
-                	return false;
+                 	return false;
 
-                String groupId = String.valueOf(groupListView.getPackedPositionGroup(id));
-                actionMode = getActivity().startActionMode(actionModeCallback);
-                actionMode.setTag(String.valueOf(groupId));
-                view.setSelected(true);
-                return true;
+                //Only allow long clicks on groups
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+                    String playerId = String.valueOf(groupListView.getPackedPositionGroup(id));
+                    actionMode = getActivity().startActionMode(groupActionModeCallback);
+                    actionMode.setTag(String.valueOf(playerId));
+                    view.setSelected(true);
+                    return true;
+                }
+                return false;
             }
 
-		    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
-		        @Override
-		        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-		            MenuInflater inflater = mode.getMenuInflater();
-		            inflater.inflate(R.menu.group_list_edit_menu, menu);
-		            return true;
-		        }
+            private ActionMode.Callback groupActionModeCallback = new ActionMode.Callback() {
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    MenuInflater inflater = mode.getMenuInflater();
+                    inflater.inflate(R.menu.group_list_edit_menu, menu);
+                    return true;
+                }
 
-		        @Override
-		        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-		            return false;
-		        }
+                @Override
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
 
-		        @Override
-		        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-		            switch (item.getItemId()) {
+                @Override
+                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    switch (item.getItemId()) {
                         case R.id.group_edit:
-		                    Intent intent = new Intent(getActivity(), GroupEditActivity.class);
-		                    intent.putExtra(Group.GROUP_ID_COLUMN, (String) mode.getTag());
-		                    startActivity(intent);
-		                    mode.finish();
-		                    return true;
+                            Intent intent = new Intent(getActivity(), GroupEditActivity.class);
+                            intent.putExtra(Group.GROUP_ID_COLUMN, (String) mode.getTag());
+                            startActivity(intent);
+                            mode.finish();
+                            return true;
                         case R.id.group_delete:
                             final String tmp = (String) mode.getTag();
                             new AlertDialog.Builder(getActivity())
@@ -139,16 +140,16 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
                                     .show();
                             mode.finish();
                             return true;
-		                default:
-		                    return false;
-		            }
-		        }
+                        default:
+                            return false;
+                    }
+                }
 
-		        @Override
-		        public void onDestroyActionMode(ActionMode mode) {
-		            actionMode = null;
-		        }
-		    };
+                @Override
+                public void onDestroyActionMode(ActionMode mode) {
+                    actionMode = null;
+                }
+            };
         });
     }
 

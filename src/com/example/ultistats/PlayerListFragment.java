@@ -72,7 +72,8 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
             }
         });
     }
-    
+
+    //Binds the actions to a long player click. Make sure you also change this in GroupListFragment
     public void bindPlayerLongClick() {
         mPlayerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 		    private ActionMode actionMode;

@@ -1,6 +1,7 @@
 package com.example.ultistats;
 
 import android.app.ActionBar;
+import android.database.sqlite.SQLiteDatabase;
 import com.example.ultistats.model.Group;
 import com.example.ultistats.model.Player;
 
@@ -36,7 +37,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 	private ListView mOtherPlayerListView;
     private SimpleCursorAdapter mGroupAdapter;
     private SimpleCursorAdapter mGroupExclusiveAdapter;
-    
+
     //Whether it is a new group being created
     private boolean mNewGroupFlag = false;
 	
@@ -58,7 +59,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         setupAdapter();
         bindPlayerClick();
     }
-    
+
     public void onDestroy() {
     	//They were in the middle of making a group and exited, so remove the entries from the database
     	super.onDestroy();
@@ -99,21 +100,21 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         String[] columns = new String[] { Player.FIRST_NAME_COLUMN, Player.LAST_NAME_COLUMN, Player.NUMBER_COLUMN };
         //The textviews that will display the data
         int[] to = new int[] { R.id.fname, R.id.lname, R.id.number };
-        
+
         // create the adapter using the cursor pointing to the desired data as well as the layout information
         mGroupAdapter = new SimpleCursorAdapter(
 	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
-        
+
         mGroupExclusiveAdapter = new SimpleCursorAdapter(
 	        this, R.layout.player_list_entry, null, columns, to, 0); //what flags?
 
         mCurrentPlayerListView = (ListView) findViewById(R.id.current_players);
         mCurrentPlayerListView.setAdapter(mGroupAdapter);
-        
+
         mOtherPlayerListView = (ListView) findViewById(R.id.other_players);
         mOtherPlayerListView.setAdapter(mGroupExclusiveAdapter);
     }
-    
+
     /**************************************************************************
      * Click Actions **********************************************************
      **************************************************************************/
@@ -123,9 +124,9 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				getContentResolver().delete(
 			        Group.DELETE_PLAYER_FROM_GROUP_URI, null, new String[]{String.valueOf(id), mGroupId});
-		    }     
+		    }
 	    });
-	    
+
 	    mOtherPlayerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -134,10 +135,10 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 				newPlayerGroupValues.put(Player.PLAYER_ID_JOIN_COLUMN, String.valueOf(id));
 				getContentResolver().insert(
 			        Group.INSERT_PLAYER_INTO_GROUP_URI, newPlayerGroupValues);
-		    }     
+		    }
 	    });
     }
-    
+
     /**************************************************************************
      * Menu Actions ***********************************************************
      **************************************************************************/
@@ -147,7 +148,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
         getMenuInflater().inflate(R.menu.group_edit_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-        
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -165,14 +166,14 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     public void saveGroup(MenuItem item) {
     	ContentValues groupValues = new ContentValues();
-    	
+
     	String mGroupName = mGroupNameEditText.getText().toString();
-    	
+
     	if (mGroupName.length() == 0) {
-    		mGroupNameEditText.setError("Group name required");
+    		mGroupNameEditText.setError(getString(R.string.group_edit_error));
     		mGroupNameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
     		    @Override
     		    public void onFocusChange(View v, boolean hasFocus) {
@@ -181,15 +182,15 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
     		});
     		return;
     	}
-    	
+
 		groupValues.put(Group.GROUP_NAME_COLUMN, mGroupName);
 
     	String selectionClause = "_id = ?";
     	String[] selectionArgs = { mGroupId };
     	getContentResolver().update(
     		Group.GROUP_URI, groupValues, selectionClause, selectionArgs
-    	); 
-    	
+    	);
+
     	//When saving a group, don't call onDestroy()
     	mNewGroupFlag = false;
     	finish();

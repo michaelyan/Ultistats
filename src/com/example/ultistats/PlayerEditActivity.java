@@ -71,7 +71,7 @@ public class PlayerEditActivity extends FragmentActivity {
     	String number = mNumberEditText.getText().toString();
 
     	if (fname.length() == 0 && lname.length() == 0) {
-    		mFnameEditText.setError("First name required");
+    		mFnameEditText.setError("First name required"); //dont hardcode this
     		mFnameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
     		    @Override
     		    public void onFocusChange(View v, boolean hasFocus) {
@@ -109,6 +109,8 @@ public class PlayerEditActivity extends FragmentActivity {
                     activity.getContentResolver().delete(
                             Player.DELETE_URI, null, new String[]{playerId});
                     Intent parentActivityIntent = new Intent(activity, PlayerGroupActivity.class);
+                    parentActivityIntent.addFlags(
+                            Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     activity.startActivity(parentActivityIntent);
                 }
             })

@@ -44,5 +44,6 @@
     <string name="group_delete_confirm_message">Delete this group?</string>
     <string name="player_tab_title">Players</string>
     <string name="group_tab_title">Group</string>
+    <string name="group_edit_error">Group Name Required</string>
 
 </resources>
