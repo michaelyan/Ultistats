@@ -1,79 +1,186 @@
 package com.example.ultistats.model;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.util.Log;
-import android.view.Menu;
-
-import java.util.ArrayList;
-import java.util.List;
- 
+import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
- 
-public class Player extends SQLiteOpenHelper {
- 
-    // All Static variables
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-    
-    // Database Name
-    private static final String DATABASE_NAME = "Ultistats";
- 
-    // Contacts table name
-    private static final String TABLE_CONTACTS = "tbl_player";
- 
-    // Contacts Table Columns names
-    private static final String KEY_ID = "_id";
-    private static final String KEY_FNAME = "fname";
-    private static final String KEY_LNAME = "lname";
-    
-    private SQLiteDatabase _db;
- 
-    public Player(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this._db = this.getWritableDatabase();
-    }
- 
-    // Creating Tables
+import android.net.Uri;
+import android.util.Log;
+
+import com.example.ultistats.DatabaseHelper;
+
+public class Player extends Base {
+
+	private SQLiteDatabase db;
+	
+	private static final String AUTHORITY = "com.example.ultistats.model.Player";
+	private static final String PLAYER_BASE_PATH = "players";
+	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
+	        + "/" + PLAYER_BASE_PATH);
+
+	private static final String ALL = "/all";
+	private static final String PLAYER = "/player";
+	private static final String NEW = "/new";
+    private static final String DELETE = "/delete";
+
+	public static final int ALL_CODE = 1;
+	public static final int PLAYER_CODE = 2;
+	public static final int NEW_CODE = 3;
+    public static final int DELETE_CODE = 4;
+
+	public static final Uri ALL_URI = Uri.withAppendedPath(Player.CONTENT_URI, ALL);
+    public static final Uri PLAYER_URI = Uri.withAppendedPath(Player.CONTENT_URI, PLAYER);
+	public static final Uri NEW_URI = Uri.withAppendedPath(Player.CONTENT_URI, NEW);
+    public static final Uri DELETE_URI = Uri.withAppendedPath(Player.CONTENT_URI, DELETE);
+
+	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+	static {
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + ALL, ALL_CODE);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + PLAYER, PLAYER_CODE);
+	    sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + NEW, NEW_CODE);
+        sURIMatcher.addURI(AUTHORITY, PLAYER_BASE_PATH + DELETE, DELETE_CODE);
+	}
+	
+	private static final String TABLE_NAME = "tbl_player";
+	public static final String PLAYER_ID_COLUMN = "_id";
+    public static final String PLAYER_ID_JOIN_COLUMN = "player_id";
+	public static final String FIRST_NAME_COLUMN = "fname";
+	public static final String LAST_NAME_COLUMN = "lname";
+    public static final String NICKNAME_COLUMN = "nickname";
+	public static final String NUMBER_COLUMN = "number";
+	
+	
+	//A class for wrapping around database rows
+	public static class PlayerRow {
+		private int _id;
+		private String fname;
+		private String lname;
+        private String nickname;
+        private int number;
+
+		public PlayerRow(int _id, String fname, String lname, String nickname, int number) {
+			this._id = _id;
+			this.fname = fname;
+			this.lname = lname;
+            this.nickname = nickname;
+            this.number = number;
+		}
+
+		public int getId() { return _id; }
+
+		public String getFname() { return fname; }
+
+		public String getLname() { return lname; }
+
+        public String getNickname() {
+            if (!("").equals(nickname))
+                return " \"" + nickname + "\" ";
+            else
+                return " ";
+        }
+
+	}
+
+	@Override
+	public boolean onCreate() {
+		db = new DatabaseHelper(getContext()).getWritableDatabase();
+		return true;
+	}
+
     @Override
-    public void onCreate(SQLiteDatabase db) {
-//        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
-//                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-//                + KEY_PH_NO + " TEXT" + ")";
-//        db.execSQL(CREATE_CONTACTS_TABLE);
-    }
- 
-    // Upgrading database
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        // Drop older table if existed
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
-// 
-//        // Create tables again
-//        onCreate(db);
-    }
- 
-    /**
-     * All CRUD(Create, Read, Update, Delete) Operations
-     */
-    public Cursor listPlayers() {
-//    	String selectQuery = "SELECT * FROM tbl_player";
-//    	Cursor cursor = this._db.rawQuery(selectQuery, null);
+
+    public int delete (Uri uri, String selection, String[] selectionArgs) {
+        int uriType = sURIMatcher.match(uri);
+        int rowsUpdated = 0;
+        String query;
+        switch (uriType) {
+            //Simply mark a player as inactive when deleting them because we still want to keep their stats
+            case DELETE_CODE:
+                query = "" +
+                        "UPDATE tbl_player " +
+                        "SET active = 0 " +
+                        "WHERE _id = ?";
+                db.execSQL(query, selectionArgs);
+                rowsUpdated = 1;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
+        return rowsUpdated;
+	}
+
+	@Override
+	public String getType(Uri arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public Uri insert(Uri uri, ContentValues values) {
+	    int uriType = sURIMatcher.match(uri);
+	    long id;
+	    switch (uriType) {
+	        case NEW_CODE:
+	            id = db.insert(TABLE_NAME, null, values);
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Unknown URI: " + uri);
+	    }
+	    getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
+//	    getContext().getContentResolver().notifyChange(
+//	    		Uri.withAppendedPath(Group.CONTENT_URI, "non-existent"), null);
+	    
+	    return ContentUris.withAppendedId(Player.CONTENT_URI, id);
+	}
+
+	@Override
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+	    int uriType = sURIMatcher.match(uri);
+	    int rowsUpdated = 0;
+	    switch (uriType) {
+	        case PLAYER_CODE:
+	            rowsUpdated = db.update(TABLE_NAME, values, selection, selectionArgs);
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Unknown URI: " + uri);
+	    }
+	    
+	    getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
+	    return rowsUpdated;
+	}
+
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+	        String[] selectionArgs, String sortOrder) {
+		Cursor cursor = null;
+        String query;
+	    int uriType = sURIMatcher.match(uri);
+	    switch (uriType) {
+	    case ALL_CODE:
+            query =
+                "SELECT * " +
+                "FROM tbl_player " +
+                "WHERE tbl_player.active = 1";
+	    	cursor = db.rawQuery(query, null);
+	        break;
+	    case PLAYER_CODE:
+	    	//Since the last segment has no spaces, it will turn the string into an array of string with one element
+            query =
+                "SELECT * FROM tbl_player " +
+                "WHERE _id = ? " +
+                "AND tbl_player.active = 1";
+	    	cursor = db.rawQuery(query, selectionArgs);
+	        break;
+	    default:
+	        throw new IllegalArgumentException("Unknown URI: " + uri);
+	    }
+	    
+    	//Make the cursor listen for changes in the database
+    	cursor.setNotificationUri(
+    			getContext().getContentResolver(), Player.CONTENT_URI);
     	
-//    	if (cursor.moveToFirst()) {
-//            do {
-//                Log.d(cursor.getString(0), cursor.getString(1));
-//                Log.d(cursor.getString(2), cursor.getString(1));
-//            } while (cursor.moveToNext());
-//        }
-    	
-//    	return cursor;
-    	return null;
-    }
-    		
- 
+	    return cursor;
+	}
 }

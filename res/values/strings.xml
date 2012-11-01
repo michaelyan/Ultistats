@@ -1,12 +1,16 @@
 <resources>
+
     <string name="app_name">Ultistats</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="hello_world">noob555</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="game_setup">Game Setup</string>
     <string name="tournament_setup">Tournament Setup</string>
     <string name="title_activity_take_stats">TakeStatsActivity</string>
-    <string name="title_activity_view_player">ViewPlayerActivity</string>
+    <string name="title_activity_view_player_list">Player List</string>
+    <string name="title_activity_view_player">View Player</string>
     <string name="button_take_stats">Take Stats</string>
     <string name="button_view_stats">View Stats</string>
     <string name="button_manage_players_groups">Manage People / Groups</string>
@@ -27,5 +31,19 @@
     <string name="title_activity_manage">Manage Player / Groups</string>
     <string name="manage_players">Players</string>
     <string name="manage_groups">Groups</string>
-    <string name="title_activity_database_helper">Database Helper</string>
+    <string name="title_activity_group">Group</string>
+    <string name="player_edit_title">Edit Player</string>
+    <string name="player_edit_fname_hint">First Name</string>
+    <string name="player_edit_lname_hint">Last Name</string>
+    <string name="player_edit_nickname_hint">Nickname</string>
+    <string name="player_edit_number_hint">Number</string>
+    <string name="group_edit_title">Edit Group</string>
+    <string name="group_edit_group_name_hint">Group Name</string>
+    <string name="player_delete_confirm_title">Delete this player?</string>
+    <string name="player_delete_confirm_message">Statistics for this player will still remain</string>
+    <string name="group_delete_confirm_message">Delete this group?</string>
+    <string name="player_tab_title">Players</string>
+    <string name="group_tab_title">Group</string>
+    <string name="group_edit_error">Group Name Required</string>
+
 </resources>
