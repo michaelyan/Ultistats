@@ -174,6 +174,7 @@ public class GroupEditActivity extends FragmentActivity implements LoaderCallbac
 
     	if (mGroupName.length() == 0) {
     		mGroupNameEditText.setError(getString(R.string.group_edit_error));
+            //Remove the error when they change the focus of the EditText
     		mGroupNameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
     		    @Override
     		    public void onFocusChange(View v, boolean hasFocus) {
