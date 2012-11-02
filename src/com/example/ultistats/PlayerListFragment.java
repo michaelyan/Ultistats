@@ -1,5 +1,6 @@
 package com.example.ultistats;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.*;
 import com.example.ultistats.model.Player;
@@ -87,6 +88,8 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
                 actionMode = getActivity().startActionMode(actionModeCallback);
                 actionMode.setTag(playerId);
                 view.setSelected(true);
+
+                getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 return true;
             }
 
