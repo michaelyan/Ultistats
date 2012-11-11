@@ -26,6 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_manage_players_groups"
-        android:onClick="manage" />
+        android:onClick="playerGroupActivity" />
 
 </LinearLayout>

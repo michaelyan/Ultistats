@@ -2,6 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/add_player"
           android:title="@string/add_player"
-          android:icon="@drawable/ic_add_player_light"
-          android:showAsAction="ifRoom|withText" />
+          android:showAsAction="ifRoom"
+          android:icon="@drawable/ic_add_player_light" />
 </menu>

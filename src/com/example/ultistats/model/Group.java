@@ -16,7 +16,7 @@ public class Group extends Base {
 	
 	//Must be the same name as the full class path
 	private static final String AUTHORITY = "com.example.ultistats.model.Group";
-	private static final String GROUP_BASE_PATH = "groups";
+	private static final String GROUP_BASE_PATH = "group";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + GROUP_BASE_PATH);
 	

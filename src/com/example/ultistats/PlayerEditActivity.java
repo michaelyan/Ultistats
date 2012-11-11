@@ -141,12 +141,12 @@ public class PlayerEditActivity extends FragmentActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 PlayerEditActivity.deletePlayer(mPlayerId, builder, this);
                 return true;
-            case R.id.player_view: {
+            case R.id.player_view:
                 Intent intent = new Intent(this, PlayerViewActivity.class);
                 intent.putExtra(Player.PLAYER_ID_COLUMN, mPlayerId);
                 startActivity(intent);
+                finish();
                 return true;
-            }
             default:
                 return super.onOptionsItemSelected(item);
         }

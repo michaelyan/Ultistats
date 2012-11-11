@@ -15,7 +15,7 @@ public class Player extends Base {
 	private SQLiteDatabase db;
 	
 	private static final String AUTHORITY = "com.example.ultistats.model.Player";
-	private static final String PLAYER_BASE_PATH = "players";
+	private static final String PLAYER_BASE_PATH = "player";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 

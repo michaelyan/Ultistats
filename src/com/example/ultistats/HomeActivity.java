@@ -9,37 +9,18 @@ import android.view.Menu;
 import android.widget.TextView;
 import android.content.Intent;
 import android.view.View;
+import com.example.ultistats.model.Base;
 
 public class HomeActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	Log.i("wtf", "wtf");
         super.onCreate(savedInstanceState);
-        Log.i("wtf", "wtf");
-        
-//        Base base = new Base(this);
-//        base.copyDatabase();
-        
-//        Player p = new Player(this);
-//        Cursor cursor = p.listPlayers();
-//        
-//        String data = "";
-//        
-//    	if (cursor.moveToFirst()) {
-//            do {
-//                Log.d(cursor.getString(0), cursor.getString(0));
-//                Log.d(cursor.getString(0), cursor.getString(0));
-//                data += cursor.getString(1);
-//                data += ',';
-//                data += cursor.getString(2);
-//                data += '\n';
-//            } while (cursor.moveToNext());
-//        }
-        
-    	TextView a = new TextView(this);
-    	a.setText("nooabo33");
-    	setContentView(a);
+
+        Base base = new Base(this);
+        base.copyDatabase();
+
+        setContentView(R.layout.home_activity);
     }
 
     @Override
@@ -48,11 +29,7 @@ public class HomeActivity extends Activity {
         return true;
     }
     
-    public void takeStats(View view) {
-    	startActivity(new Intent(this, TakeStatsActivity.class));
-    }
-    
-    public void manage(View view) {
-    	startActivity(new Intent(this, ManageActivity.class));
+    public void playerGroupActivity(View view) {
+        startActivity(new Intent(this, PlayerGroupActivity.class));
     }
 }

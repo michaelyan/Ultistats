@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class PlayerListFragment extends Fragment implements LoaderCallbacks<Cursor> {
+public class PlayerListFragment extends BaseFragment implements LoaderCallbacks<Cursor> {
 	
     private ListView mPlayerListView;
     private SimpleCursorAdapter mAdapter;
@@ -74,7 +74,7 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
         });
     }
 
-    //Binds the actions to a long player click. Make sure you also change this in GroupListFragment
+    //Binds the actions to a long player click. Make sure you also change this function in GroupListFragment
     public void bindPlayerLongClick() {
         mPlayerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 		    private ActionMode actionMode;
@@ -89,7 +89,6 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
                 actionMode.setTag(playerId);
                 view.setSelected(true);
 
-                getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 return true;
             }
 
@@ -147,12 +146,17 @@ public class PlayerListFragment extends Fragment implements LoaderCallbacks<Curs
      **************************************************************************/
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         inflater.inflate(R.menu.player_list_menu, menu);
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                goToHomeActivity();
+                return true;
             case R.id.add_player:
             	newPlayer(item);
                 return true;
