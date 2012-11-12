@@ -89,6 +89,7 @@ public class Player extends Base {
 	}
 
     @Override
+
     public int delete (Uri uri, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
         int rowsUpdated = 0;
