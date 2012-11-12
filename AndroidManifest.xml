@@ -24,6 +24,11 @@
             android:authorities="com.example.ultistats.model.Group"
             android:multiprocess="true" >
         </provider>
+        <provider
+                android:name="com.example.ultistats.model.Tournament"
+                android:authorities="com.example.ultistats.model.Tournament"
+                android:multiprocess="true" >
+        </provider>
 
         <activity
             android:name=".HomeActivity"
@@ -42,20 +47,11 @@
                 android:value="com.example.ultistats.HomeActivity" />
         </activity>
         <activity
-            android:name=".ManageActivity"
-            android:label="@string/title_activity_manage" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ultistats.HomeActivity" />
-        </activity>
-        <activity
             android:name=".PlayerGroupActivity"
             android:label="@string/title_activity_view_player_list" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.ultistats.HomeActivity" />
         </activity>
         <activity
             android:name=".PlayerViewActivity"
@@ -78,8 +74,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.myfirstapp.MainActivity" />
         </activity>
-        <activity android:name=".BaseActivity"/>
-        <activity android:name=".BaseFragment"/>
+
+        <activity android:name=".TournamentLIstActivity"/>
 
     </application>
 
