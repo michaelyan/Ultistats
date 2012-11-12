@@ -45,5 +45,8 @@
     <string name="player_tab_title">Players</string>
     <string name="group_tab_title">Group</string>
     <string name="group_edit_error">Group Name Required</string>
+    <string name="player_edit_error">First name, last name, or nickname required</string>
+    <string name="add_group">Add Group</string>
+    <string name="add_player">Add Player</string>
 
 </resources>

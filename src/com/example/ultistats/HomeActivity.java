@@ -9,14 +9,15 @@ import android.view.Menu;
 import android.widget.TextView;
 import android.content.Intent;
 import android.view.View;
+import com.example.ultistats.model.Base;
 
 public class HomeActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	Log.i("wtf", "wtf");
         super.onCreate(savedInstanceState);
 
+<<<<<<< HEAD
 //        Base base = new Base(this);
 //        base.copyDatabase();
         
@@ -40,6 +41,12 @@ public class HomeActivity extends Activity {
 
     	a.setText("nooabo33");
     	setContentView(a);
+=======
+        Base base = new Base(this);
+        base.copyDatabase();
+
+        setContentView(R.layout.home_activity);
+>>>>>>> yan
     }
 
     @Override
@@ -48,11 +55,7 @@ public class HomeActivity extends Activity {
         return true;
     }
     
-    public void takeStats(View view) {
-    	startActivity(new Intent(this, TakeStatsActivity.class));
-    }
-    
-    public void manage(View view) {
-    	startActivity(new Intent(this, ManageActivity.class));
+    public void playerGroupActivity(View view) {
+        startActivity(new Intent(this, PlayerGroupActivity.class));
     }
 }

@@ -70,8 +70,9 @@ public class PlayerEditActivity extends FragmentActivity {
         String nickname = mNicknameEditText.getText().toString();
     	String number = mNumberEditText.getText().toString();
 
-    	if (fname.length() == 0 && lname.length() == 0) {
-    		mFnameEditText.setError("First name required"); //dont hardcode this
+    	if (fname.length() == 0 && lname.length() == 0 && nickname.length() == 0) {
+    		mFnameEditText.setError(getString(R.string.player_edit_error));
+            //Remove the error when they change the focus of the EditText
     		mFnameEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
     		    @Override
     		    public void onFocusChange(View v, boolean hasFocus) {
@@ -139,6 +140,12 @@ public class PlayerEditActivity extends FragmentActivity {
             case R.id.player_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 PlayerEditActivity.deletePlayer(mPlayerId, builder, this);
+                return true;
+            case R.id.player_view:
+                Intent intent = new Intent(this, PlayerViewActivity.class);
+                intent.putExtra(Player.PLAYER_ID_COLUMN, mPlayerId);
+                startActivity(intent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

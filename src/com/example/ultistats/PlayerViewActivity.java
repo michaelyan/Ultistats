@@ -49,7 +49,7 @@ public class PlayerViewActivity extends FragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        getMenuInflater().inflate(R.menu.player_edit_menu_1, menu);
+        getMenuInflater().inflate(R.menu.player_edit_menu_3, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

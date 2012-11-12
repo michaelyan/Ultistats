@@ -15,7 +15,7 @@ public class Player extends Base {
 	private SQLiteDatabase db;
 	
 	private static final String AUTHORITY = "com.example.ultistats.model.Player";
-	private static final String PLAYER_BASE_PATH = "players";
+	private static final String PLAYER_BASE_PATH = "player";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 	        + "/" + PLAYER_BASE_PATH);
 
@@ -95,7 +95,6 @@ public class Player extends Base {
         int rowsUpdated = 0;
         String query;
         switch (uriType) {
-            //Simply mark a player as inactive when deleting them because we still want to keep their stats
             case DELETE_CODE:
                 query = "" +
                         "UPDATE tbl_player " +
@@ -112,12 +111,6 @@ public class Player extends Base {
         return rowsUpdated;
 	}
 
-	@Override
-	public String getType(Uri arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	public Uri insert(Uri uri, ContentValues values) {
 	    int uriType = sURIMatcher.match(uri);
 	    long id;
@@ -129,9 +122,7 @@ public class Player extends Base {
 	            throw new IllegalArgumentException("Unknown URI: " + uri);
 	    }
 	    getContext().getContentResolver().notifyChange(Player.CONTENT_URI, null);
-//	    getContext().getContentResolver().notifyChange(
-//	    		Uri.withAppendedPath(Group.CONTENT_URI, "non-existent"), null);
-	    
+
 	    return ContentUris.withAppendedId(Player.CONTENT_URI, id);
 	}
 
