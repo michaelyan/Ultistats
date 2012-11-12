@@ -75,7 +75,7 @@
                 android:value="com.example.myfirstapp.MainActivity" />
         </activity>
 
-        <activity android:name=".TournamentLIstActivity"/>
+        <activity android:name=".TournamentListActivity"/>
 
     </application>
 

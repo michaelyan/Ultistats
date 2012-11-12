@@ -58,7 +58,7 @@ public class Tournament extends Base {
         switch (uriType) {
             case DELETE_CODE:
                 query = "" +
-                        "UPDATE tbl_player " +
+                        "UPDATE tbl_tournament " +
                         "SET active = 0 " +
                         "WHERE _id = ?";
                 db.execSQL(query, selectionArgs);

@@ -55,7 +55,8 @@ public class TournamentListFragment extends BaseFragment implements LoaderCallba
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mTournamentListView = (ListView) getView().findViewById(R.id.tournament_list);
+        //fail
+        mTournamentListView = (ListView) getView().findViewById(R.id.player_edit);
         mTournamentListView.setAdapter(mAdapter);
 
         bindPlayerClick();
