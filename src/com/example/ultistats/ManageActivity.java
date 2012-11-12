@@ -75,7 +75,7 @@ public class ManageActivity extends FragmentActivity implements ActionBar.TabLis
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     	currentFragment = null;
     	if (tab.getText().equals(getString(R.string.manage_players))) {
-    		currentFragment = new ManagePlayers();
+    		//currentFragment = new ManagePlayers();
     	} else if (tab.getText().equals(getString(R.string.manage_groups))) {
     		//currentFragment = new ManageGroups();
     	}
