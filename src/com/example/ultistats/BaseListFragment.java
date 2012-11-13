@@ -2,6 +2,7 @@ package com.example.ultistats;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,7 +13,7 @@ import android.os.Bundle;
  * Time: 12:54 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BaseFragment extends Fragment {
+public class BaseListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }

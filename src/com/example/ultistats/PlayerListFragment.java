@@ -6,7 +6,6 @@ import android.content.*;
 import com.example.ultistats.model.Player;
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.database.Cursor;
 import android.view.ActionMode;
@@ -22,9 +21,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class PlayerListFragment extends BaseFragment implements LoaderCallbacks<Cursor> {
+public class PlayerListFragment extends BaseListFragment implements LoaderCallbacks<Cursor> {
 	
-    private ListView mPlayerListView;
     private SimpleCursorAdapter mAdapter;
     
     @Override
@@ -43,19 +41,19 @@ public class PlayerListFragment extends BaseFragment implements LoaderCallbacks<
         mAdapter = new SimpleCursorAdapter(
 	        getActivity().getApplicationContext(), R.layout.player_list_entry, null, columns, to, 0); //what flags?
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
     		Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.player_group_list, container, false);
-    } 
-    
-    @Override
+        //unnecessary since we are using a ListFragment so a ListView is automatically created
+        return null;
+    }
+
+    //Called after the activity is created so that the views are existent
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         
-        mPlayerListView = (ListView) getView().findViewById(R.id.player_list);
-        mPlayerListView.setAdapter(mAdapter);
+        setListAdapter(mAdapter);
         
 	    bindPlayerClick();
 	    bindPlayerLongClick();
@@ -65,7 +63,7 @@ public class PlayerListFragment extends BaseFragment implements LoaderCallbacks<
      * Event Handlers *********************************************************
      **************************************************************************/
     public void bindPlayerClick() {
-        mPlayerListView.setOnItemClickListener(new OnItemClickListener() {
+        getListView().setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), PlayerViewActivity.class);
                 intent.putExtra(Player.PLAYER_ID_COLUMN, String.valueOf(id));
@@ -76,7 +74,7 @@ public class PlayerListFragment extends BaseFragment implements LoaderCallbacks<
 
     //Binds the actions to a long player click. Make sure you also change this function in GroupListFragment
     public void bindPlayerLongClick() {
-        mPlayerListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 		    private ActionMode actionMode;
 		    
         	@Override

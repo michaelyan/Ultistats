@@ -8,22 +8,20 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class PlayerGroupActivity extends FragmentActivity {
+public class PlayerGroupActivity extends Activity {
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    // Notice that setContentView() is not used, because we use the root
 	    // android.R.id.content as the container for each fragment
 
 	    Base base = new Base(this);
 	    base.copyDatabase();
-	    
+
 	    // setup action bar for tabs
 	    ActionBar actionBar = getActionBar();
 	    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -41,7 +39,7 @@ public class PlayerGroupActivity extends FragmentActivity {
 	                this, GroupListFragment.class));
 	    actionBar.addTab(tab);
 	}
-    
+
     /**************************************************************************
      * Tab Listener Class *****************************************************
      **************************************************************************/
@@ -49,7 +47,7 @@ public class PlayerGroupActivity extends FragmentActivity {
         private Fragment fragment;
         private final Activity activity;
         private final Class<T> clz;
-        
+
         public PlayerGroupTabListener(Activity activity, Class<T> clz) {
             this.activity = activity;
             this.clz = clz;
@@ -81,4 +79,8 @@ public class PlayerGroupActivity extends FragmentActivity {
             // User selected the already selected tab. Usually do nothing.
         }
     }
+//	public void onCreate(Bundle savedInstanceState) {
+//	    super.onCreate(savedInstanceState);
+//        setContentView(R.layout.player_group);
+//    }
 }

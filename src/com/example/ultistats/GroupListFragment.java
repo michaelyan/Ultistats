@@ -53,12 +53,12 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         getLoaderManager().initLoader(Group.ALL_CODE, null, this);
         getLoaderManager().initLoader(Group.PLAYERS_CODE, null, this);
     }
-    
-    @Override
+
+    //Also sets the context of the fragment of which view are referred to via R.id
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
     		Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.player_group_list, container, false);
-    } 
+        return inflater.inflate(R.layout.group_list, container, false);
+    }
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         
         groupListView = (ExpandableListView) getView().findViewById(R.id.group_list);
         bindPlayerClick();
-        bindItemLongClick();
+        bindGroupLongClick();
     }
     
     /**************************************************************************
@@ -84,7 +84,7 @@ public class GroupListFragment extends Fragment implements LoaderCallbacks<Curso
         });
     }
 
-    public void bindItemLongClick() {
+    public void bindGroupLongClick() {
         groupListView.setOnItemLongClickListener(new OnItemLongClickListener() {
         	private ActionMode actionMode;
 

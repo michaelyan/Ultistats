@@ -6,7 +6,6 @@ import android.content.*;
 import com.example.ultistats.model.Player;
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.database.Cursor;
 import android.view.ActionMode;
@@ -23,7 +22,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 import com.example.ultistats.model.Tournament;
 
-public class TournamentListFragment extends BaseFragment implements LoaderCallbacks<Cursor> {
+public class TournamentListFragment extends BaseListFragment implements LoaderCallbacks<Cursor> {
 
     private ListView mTournamentListView;
     private SimpleCursorAdapter mAdapter;
@@ -48,7 +47,7 @@ public class TournamentListFragment extends BaseFragment implements LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.player_group_list, container, false);
+        return inflater.inflate(R.layout.player_group, container, false);
     }
 
     @Override

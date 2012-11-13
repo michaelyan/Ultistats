@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+    <fragment
+        class="com.example.ultistats.PlayerListFragment"
+        android:id="@+id/player_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <fragment
+            class="com.example.ultistats.GroupListFragment"
+            android:id="@+id/group_list2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+</LinearLayout>
