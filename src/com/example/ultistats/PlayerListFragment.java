@@ -45,8 +45,8 @@ public class PlayerListFragment extends BaseListFragment implements LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
     		Bundle savedInstanceState) {
-        //unnecessary since we are using a ListFragment so a ListView is automatically created
-        return null;
+        //unnecessary to implement since we are using a ListFragment so a ListView is automatically created
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     //Called after the activity is created so that the views are existent
